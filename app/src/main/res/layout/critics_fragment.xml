@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/bgn">
+
+    <EditText
+        android:id="@+id/criticName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:drawableStart="@drawable/ic_search"
+        android:imeOptions="actionGo"
+        android:ems="10"
+        android:hint="@string/name_and_surname"
+        android:inputType="text"
+        android:drawablePadding="12dp"/>
+
+    <ImageButton
+        android:contentDescription="@string/desc_image_button"
+        android:id="@+id/clear_critics_name"
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
+        android:layout_alignEnd="@+id/criticName"
+        android:layout_alignParentTop="true"
+        android:background="@color/bgn"
+        app:srcCompat="@drawable/ic_trash_alt"/>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipe_container_critics"
+        android:layout_below="@+id/criticName"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_critics"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-8dp"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</RelativeLayout>

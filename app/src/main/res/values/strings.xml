@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">LetMeCode Interview task</string>
+
+    <string name="keywords">Keywords</string>
+    <string name="date">Date</string>
+    <string name="name_and_surname">  Name and/or Surname</string>
+    
+    <string name="api_key_nyt">020eb74eff674e3da8aaa1e8e311edda</string>
+    
+    <string name="main_url">https://api.nytimes.com/svc/movies/v2/reviews/search.json</string>
+    <string name="main_url_critics">https://api.nytimes.com/svc/movies/v2/critics/all.json</string>
+    <string name="main_url_critics_search">https://api.nytimes.com/svc/movies/v2/critics/</string>
+    <string name="src_user_avatar">http://protasov-dev.ru/img_for_github/avatar.jpg</string>
+    <string name="src_search">http://protasov-dev.ru/img_for_github/no-image.jpg</string>
+
+    <string name="base_url">https://api.nytimes.com</string>
+
+    <string name="invalid_par">Invalid parameter!</string>
+    <string name="full_name">Enter the full name of the critic</string>
+    
+    <string name="desc_image">Image</string>
+    <string name="desc_image_button">Image Button</string>
+
+    <string name="loading">Loading...</string>
+</resources>
