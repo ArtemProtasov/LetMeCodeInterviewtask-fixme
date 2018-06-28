@@ -2,7 +2,7 @@ package ru.protasov_dev.letmecodeinterviewtask.Fragments;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -10,7 +10,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,12 +20,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -35,12 +29,9 @@ import java.util.Locale;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import ru.protasov_dev.letmecodeinterviewtask.Adapters.MyCustomAdapterReviewes;
 import ru.protasov_dev.letmecodeinterviewtask.Adapters.ReviewsAdapter;
 import ru.protasov_dev.letmecodeinterviewtask.App;
-import ru.protasov_dev.letmecodeinterviewtask.Elements.ReviewesElement;
-import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.ParseTaskReviewes;
-import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.PostModel;
+import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.PostModelReviews;
 import ru.protasov_dev.letmecodeinterviewtask.R;
 
 public class ReviewesFragmentV2 extends Fragment {
@@ -49,10 +40,9 @@ public class ReviewesFragmentV2 extends Fragment {
     private EditText date;
     private int offset = 0;
     private Calendar Date = Calendar.getInstance();
-    private String url;
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
-    private List<PostModel> posts;
+    private List<PostModelReviews> posts;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -73,7 +63,7 @@ public class ReviewesFragmentV2 extends Fragment {
         posts = new ArrayList<>();
 
         //Вызываем парсес
-        //getReviews();
+        getReviews();
 
         //При клике на поле ввода даты - отображаем диалог выбора даты
         date.setOnClickListener(new View.OnClickListener() {
@@ -151,26 +141,6 @@ public class ReviewesFragmentV2 extends Fragment {
                 android.R.color.holo_red_light);
     }
 
-
-    //FIXME Retrofit
-    private void createURL(){
-        //Основной URL имеет вид:
-        //https://api.nytimes.com/svc/movies/v2/reviews/search.json?api-key=020eb74eff674e3da8aaa1e8e311edda
-        url = getString(R.string.main_url) + "?api-key=" + getString(R.string.api_key_nyt) + "&offset=" + offset;
-        //Дальше проверяем, если поле Keywords заполнено, то
-        if(keywords.getText().length() != 0){
-            //Добавляем в URL "query"
-            //https://api.nytimes.com/svc/movies/v2/reviews/search.json?api-key=020eb74eff674e3da8aaa1e8e311edda&query=example+text
-            url += "&query=" + keywords.getText().toString().replace(" ", "+");
-        }
-        //Если поле с датой заполнено, то добавляем в URL "publication-date"
-        if(date.getText().length() != 0){
-            //И URL становится таким:
-            //https://api.nytimes.com/svc/movies/v2/reviews/search.json?api-key=020eb74eff674e3da8aaa1e8e311edda&order=by-publication-date&publication-date=INPUT_DATE
-            url += "&order=by-publication-date" + "&publication-date=" + date.getText().toString().replace("/", "-");
-        }
-    }
-
     //Установка даты
     private void setInitialDate() {
         //Преобразуем с помощью SimpleDateFormat дату в миллисекундах в следующий формат: ГОД/МЕСЯЦ/ДЕНЬ (так задано в ТЗ)
@@ -195,35 +165,35 @@ public class ReviewesFragmentV2 extends Fragment {
 
     private void getReviews() {
 
-        //Формируем URL
-        createURL();
+        posts = new ArrayList<>();
 
-        //posts = new ArrayList<>();
-
+        ReviewsAdapter adapter = new ReviewsAdapter(posts, getContext());
 
         recyclerView = getView().findViewById(R.id.recycler_reviews);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        ReviewsAdapter adapter = new ReviewsAdapter(posts, getContext());
         recyclerView.setAdapter(adapter);
 
-        App.getApi().getAllReviews(getString(R.string.api_key_nyt)).enqueue(new Callback<List<PostModel>>() {
+        App.getApi().getAllReviews(getString(R.string.api_key_nyt)).enqueue(new Callback<List<PostModelReviews>>() {
             @Override
-            public void onResponse(Call<List<PostModel>> call, Response<List<PostModel>> response) {
+            public void onResponse(@NonNull Call<List<PostModelReviews>> call, @NonNull Response<List<PostModelReviews>> response) {
                 posts.clear();
-                if(response.body() != null)
-                    posts.addAll(response.body());
+                assert response.body() != null;
+                posts.addAll(response.body());
                 recyclerView.getAdapter().notifyDataSetChanged();
+
             }
 
             @Override
-            public void onFailure(Call<List<PostModel>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<PostModelReviews>> call, @NonNull Throwable t) {
                 Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+                System.out.println(t);
             }
         });
 
-        swipeRefreshLayout.setRefreshing(false);
+        //swipeRefreshLayout.setRefreshing(false);
 
     }
 

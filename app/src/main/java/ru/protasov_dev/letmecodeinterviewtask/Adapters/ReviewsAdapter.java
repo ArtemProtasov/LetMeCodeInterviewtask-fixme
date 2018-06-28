@@ -13,15 +13,15 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
-import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.PostModel;
+import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.PostModelReviews;
 import ru.protasov_dev.letmecodeinterviewtask.R;
 
 public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHolder>{
 
-    private List<PostModel> posts;
+    private List<PostModelReviews> posts;
     private Context context;
 
-    public ReviewsAdapter(List<PostModel> posts, Context context){
+    public ReviewsAdapter(List<PostModelReviews> posts, Context context){
         this.posts = posts;
         this.context = context;
     }
@@ -34,7 +34,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        PostModel post = posts.get(position);
+        PostModelReviews post = posts.get(position);
         holder.txtTitleReviewes.setText(post.getResults().get(position).getDisplayTitle());
         holder.txtSummaryShortReviewes.setText(post.getResults().get(position).getSummaryShort());
         holder.txtDateReviewes.setText(post.getResults().get(position).getPublicationDate());

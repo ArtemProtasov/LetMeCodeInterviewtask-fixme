@@ -9,7 +9,7 @@ public class ReviewesElement {
     private String byline;
     private String urlImg;
     //FIXME убрать Context и никогда больше так не делать
-    private Context context;
+    //private Context context;
     private String urlPage;
     private String suggestedLinkText;
 
@@ -19,7 +19,7 @@ public class ReviewesElement {
         this.date = date;
         this.byline = byline;
         this.urlImg = urlImg;
-        this.context = context;
+        //this.context = context;
         this.urlPage = urlPage;
         this.suggestedLinkText = suggestedLinkText;
     }
@@ -44,9 +44,9 @@ public class ReviewesElement {
         return urlImg;
     }
 
-    public Context getContext() {
-        return context;
-    }
+    //public Context getContext() {
+    //    return context;
+    //}
 
     public String getSuggestedLinkText() {
         return suggestedLinkText;

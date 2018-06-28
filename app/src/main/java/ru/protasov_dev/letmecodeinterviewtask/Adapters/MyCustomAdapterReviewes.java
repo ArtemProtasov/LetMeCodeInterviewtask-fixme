@@ -37,9 +37,9 @@ public class MyCustomAdapterReviewes extends RecyclerView.Adapter<MyCustomAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ReviewesElement reviewesElement = list.get(position);
-        Glide.with(reviewesElement.getContext())
-                .load(reviewesElement.getUrlImg())
-                .into(holder.imgReviewes);
+        //Glide.with(reviewesElement.getContext())
+        //        .load(reviewesElement.getUrlImg())
+        //        .into(holder.imgReviewes);
         holder.txtTitleReviewes.setText(reviewesElement.getTitle());
         holder.txtSummaryShortReviewes.setText(reviewesElement.getSummaryShort());
         holder.txtDateReviewes.setText(reviewesElement.getDate());
