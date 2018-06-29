@@ -42,7 +42,7 @@ public class ReviewesFragmentV2 extends Fragment {
     private Calendar Date = Calendar.getInstance();
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
-    private List<PostModelReviews> posts;
+    private PostModelReviews posts = new PostModelReviews();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,16 +51,17 @@ public class ReviewesFragmentV2 extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         keywords = getView().findViewById(R.id.keyword);
         date = getView().findViewById(R.id.data);
         date.setInputType(InputType.TYPE_NULL); //Не выводим клавиатуру
+        swipeRefreshLayout = getView().findViewById(R.id.swipe_container);
         ImageButton clearKeywords = getView().findViewById(R.id.clear_keywords);
         ImageButton clearDate = getView().findViewById(R.id.clear_date);
         ImageButton nextPage = getView().findViewById(R.id.next_page);
         ImageButton prevPage = getView().findViewById(R.id.prev_page);
 
-        posts = new ArrayList<>();
+        //posts = new ArrayList<>();
 
         //Вызываем парсес
         getReviews();
@@ -127,18 +128,17 @@ public class ReviewesFragmentV2 extends Fragment {
             }
         });
 
-        swipeRefreshLayout = getView().findViewById(R.id.swipe_container);
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 getReviews();
             }
         });
-
-        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
     }
 
     //Установка даты
@@ -164,39 +164,31 @@ public class ReviewesFragmentV2 extends Fragment {
     };
 
     private void getReviews() {
-
-        posts = new ArrayList<>();
-
-        ReviewsAdapter adapter = new ReviewsAdapter(posts, getContext());
-
-        recyclerView = getView().findViewById(R.id.recycler_reviews);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
-
-        recyclerView.setAdapter(adapter);
-
-        App.getApi().getAllReviews(getString(R.string.api_key_nyt)).enqueue(new Callback<List<PostModelReviews>>() {
+        App.getApi().getAllReviews(getString(R.string.api_key_nyt)).enqueue(new Callback<PostModelReviews>() {
             @Override
-            public void onResponse(@NonNull Call<List<PostModelReviews>> call, @NonNull Response<List<PostModelReviews>> response) {
-                posts.clear();
+            public void onResponse(@NonNull Call<PostModelReviews> call, @NonNull Response<PostModelReviews> response) {
                 assert response.body() != null;
-                posts.addAll(response.body());
-                recyclerView.getAdapter().notifyDataSetChanged();
+                posts = response.body();
+                ReviewsAdapter adapter = new ReviewsAdapter(posts);
 
+                recyclerView = getView().findViewById(R.id.recycler_reviews);
+
+                LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+                recyclerView.setLayoutManager(layoutManager);
+
+                recyclerView.setAdapter(adapter);
+                recyclerView.getAdapter().notifyDataSetChanged();
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<PostModelReviews>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<PostModelReviews> call, @NonNull Throwable t) {
                 Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
                 System.out.println(t);
             }
         });
 
-        //swipeRefreshLayout.setRefreshing(false);
-
+        swipeRefreshLayout.setRefreshing(false);
     }
-
 
 
 }

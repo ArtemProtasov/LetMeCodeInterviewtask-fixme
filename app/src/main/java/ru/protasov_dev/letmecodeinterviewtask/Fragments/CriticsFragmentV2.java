@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -31,7 +32,7 @@ public class CriticsFragmentV2 extends Fragment{
 
     private EditText nameCritics;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private List<PostModelCritics> posts;
+    private PostModelCritics posts;
     private RecyclerView recyclerView;
 
     @Override
@@ -86,29 +87,29 @@ public class CriticsFragmentV2 extends Fragment{
 
     private void getCritics(){
 
-        posts = new ArrayList<>();
-
-        CriticsAdapter adapter = new CriticsAdapter(posts, getContext());
-
-        recyclerView = getView().findViewById(R.id.recycler_critics);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
-
-        recyclerView.setAdapter(adapter);
-
-        App.getApi().getAllCritics(getString(R.string.api_key_nyt)).enqueue(new Callback<List<PostModelCritics>>() {
+        App.getApi().getAllCritics(getString(R.string.api_key_nyt)).enqueue(new Callback<PostModelCritics>() {
             @Override
-            public void onResponse(@NonNull Call<List<PostModelCritics>> call, @NonNull Response<List<PostModelCritics>> response) {
-                posts.clear();
+            public void onResponse(@NonNull Call<PostModelCritics> call, @NonNull Response<PostModelCritics> response) {
+                //posts.clear();
                 assert response.body() != null;
-                posts.addAll(response.body());
+
+                posts = response.body();
+
+                CriticsAdapter adapter = new CriticsAdapter(posts);
+
+                recyclerView = getView().findViewById(R.id.recycler_critics);
+
+                GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
+                recyclerView.setLayoutManager(layoutManager);
+
+                recyclerView.setAdapter(adapter);
+
                 recyclerView.getAdapter().notifyDataSetChanged();
 
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<PostModelCritics>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<PostModelCritics> call, @NonNull Throwable t) {
                 Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
                 System.out.println(t);
             }

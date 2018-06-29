@@ -1,6 +1,7 @@
 package ru.protasov_dev.letmecodeinterviewtask.Adapters;
 
-import android.content.Context;
+import android.content.Intent;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,18 +11,16 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import java.util.List;
-
+import ru.protasov_dev.letmecodeinterviewtask.Activity.CriticPage;
 import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelCritics.PostModelCritics;
+import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelCritics.Result;
 import ru.protasov_dev.letmecodeinterviewtask.R;
 
 public class CriticsAdapter extends RecyclerView.Adapter<CriticsAdapter.ViewHolder>{
-    private List<PostModelCritics> posts;
-    private Context context;
+    private PostModelCritics posts;
 
-    public CriticsAdapter(List<PostModelCritics> posts, Context context) {
+    public CriticsAdapter(PostModelCritics posts) {
         this.posts = posts;
-        this.context = context;
     }
 
     @Override
@@ -31,32 +30,55 @@ public class CriticsAdapter extends RecyclerView.Adapter<CriticsAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        PostModelCritics post = posts.get(position);
-        holder.criticName.setText(post.getResults().get(position).getDisplayName());
-        holder.status.setText(post.getResults().get(position).getStatus());
-        Glide.with(context) //FIXME убрать контекст
-                .load(post.getResults().get(position).getMultimedia().getSrc())
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        final Result post = posts.getResults().get(position);
+        holder.criticName.setText(post.getDisplayName());
+        holder.status.setText(post.getStatus());
+
+        final String URL;
+
+        if(post.getMultimedia() == null)
+            URL = holder.criticPhoto.getContext().getString(R.string.src_user_avatar);
+        else
+            URL = post.getMultimedia().getResource().getSrc();
+
+        Glide.with(holder.criticPhoto.getContext())
+                .load(URL)
                 .into(holder.criticPhoto);
+
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent startCriticPage = new Intent(view.getContext(), CriticPage.class)
+                        .putExtra("NAME", post.getDisplayName())
+                        .putExtra("STATUS", post.getStatus())
+                        .putExtra("BIO", post.getBio())
+                        .putExtra("URL_IMG", URL);
+                view.getContext().startActivity(startCriticPage);
+            }
+        });
+
     }
 
     @Override
     public int getItemCount() {
         if (posts == null)
             return 0;
-        return posts.size();
+        return posts.getNumResults();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView criticPhoto;
         TextView criticName;
         TextView status;
+        CardView cardView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             criticPhoto = itemView.findViewById(R.id.critic_photo);
             criticName = itemView.findViewById(R.id.critic_name);
             status = itemView.findViewById(R.id.status);
+            cardView = itemView.findViewById(R.id.card_view_critics);
         }
     }
 }

@@ -16,7 +16,7 @@ public class App extends Application{
         super.onCreate();
 
         retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.nytimes.com/svc/movies/v2/")
+                .baseUrl("https://api.nytimes.com")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

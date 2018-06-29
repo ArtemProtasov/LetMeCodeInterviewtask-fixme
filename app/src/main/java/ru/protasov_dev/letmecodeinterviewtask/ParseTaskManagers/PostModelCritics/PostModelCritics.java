@@ -50,5 +50,4 @@ public class PostModelCritics {
     public void setResults(List<Result> results) {
         this.results = results;
     }
-
 }

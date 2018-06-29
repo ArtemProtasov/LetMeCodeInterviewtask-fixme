@@ -48,7 +48,7 @@ public class Result {
         this.status = status;
     }
 
-    public Object getBio() {
+    public String getBio() {
         return bio;
     }
 

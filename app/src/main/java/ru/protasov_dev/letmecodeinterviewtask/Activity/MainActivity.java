@@ -6,12 +6,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-
-import ru.protasov_dev.letmecodeinterviewtask.Fragments.CriticsFragment;
 import ru.protasov_dev.letmecodeinterviewtask.Fragments.CriticsFragmentV2;
 import ru.protasov_dev.letmecodeinterviewtask.Fragments.ReviewesFragmentV2;
 import ru.protasov_dev.letmecodeinterviewtask.R;
-import ru.protasov_dev.letmecodeinterviewtask.Fragments.ReviewesFragment;
 import ru.protasov_dev.letmecodeinterviewtask.Adapters.ViewPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
@@ -39,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new ReviewesFragmentV2(), "Reviewes"); //Добавляем фрагмент ReviewesFragment
         adapter.addFragment(new CriticsFragmentV2(), "Critics");
-        //adapter.addFragment(new CriticsFragment(), "Critics"); //и CriticsFragment
         viewPager.setAdapter(adapter);
     }
 }

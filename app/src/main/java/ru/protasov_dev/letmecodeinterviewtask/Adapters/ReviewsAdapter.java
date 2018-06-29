@@ -1,6 +1,8 @@
 package ru.protasov_dev.letmecodeinterviewtask.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.RecoverySystem;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,17 +15,17 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+import ru.protasov_dev.letmecodeinterviewtask.Activity.ReviewPage;
 import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.PostModelReviews;
+import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.Result;
 import ru.protasov_dev.letmecodeinterviewtask.R;
 
 public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHolder>{
 
-    private List<PostModelReviews> posts;
-    private Context context;
+    private PostModelReviews posts;
 
-    public ReviewsAdapter(List<PostModelReviews> posts, Context context){
+    public ReviewsAdapter(PostModelReviews posts){
         this.posts = posts;
-        this.context = context;
     }
 
     @Override
@@ -34,21 +36,39 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        PostModelReviews post = posts.get(position);
-        holder.txtTitleReviewes.setText(post.getResults().get(position).getDisplayTitle());
-        holder.txtSummaryShortReviewes.setText(post.getResults().get(position).getSummaryShort());
-        holder.txtDateReviewes.setText(post.getResults().get(position).getPublicationDate());
-        holder.txtByline.setText(post.getResults().get(position).getByline());
-        Glide.with(context) //FIXME убрать контекст
-                .load(post.getResults().get(position).getMultimedia().getSrc())
+        final Result post = posts.getResults().get(position);
+        holder.txtTitleReviewes.setText(post.getDisplayTitle());
+        holder.txtSummaryShortReviewes.setText(post.getSummaryShort());
+        holder.txtDateReviewes.setText(post.getPublicationDate());
+        holder.txtByline.setText(post.getByline());
+
+        String URL;
+
+        if(post.getMultimedia().getSrc() != null)
+            URL = post.getMultimedia().getSrc();
+        else
+            URL = holder.imgReviewes.getContext().getString(R.string.src_search);
+        Glide.with(holder.imgReviewes.getContext())
+                .load(URL)
                 .into(holder.imgReviewes);
+
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent startReviewPage = new Intent(view.getContext(), ReviewPage.class)
+                        .putExtra("URL", post.getLink().getUrl())
+                        .putExtra("ARTICLE_TITLE", post.getDisplayTitle());
+                view.getContext().startActivity(startReviewPage);
+
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         if(posts == null)
             return 0;
-        return posts.size();
+        return posts.getNumResults();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
