@@ -92,4 +92,3 @@ _Примеры поиска доступны в api консоли._
 ## APK файл
 
 [Скачать с MEGA](https://mega.nz/#!JyIS0SRL!qZ1llSF5NrxZD6JIT4l_sYpYC7ZhXlrgw3bQ9J3EffI)
-# LetMeCodeInterviewTask-fixme
