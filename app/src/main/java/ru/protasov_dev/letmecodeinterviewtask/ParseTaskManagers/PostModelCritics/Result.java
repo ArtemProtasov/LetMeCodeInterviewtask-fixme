@@ -22,7 +22,7 @@ public class Result {
     private String seoName;
     @SerializedName("multimedia")
     @Expose
-    private Multimedia multimedia;
+    private Multimedia multimedia = null;
 
     public String getDisplayName() {
         return displayName;

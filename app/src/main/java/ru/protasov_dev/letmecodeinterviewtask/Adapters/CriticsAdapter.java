@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import ru.protasov_dev.letmecodeinterviewtask.Activity.CriticPage;
 import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelCritics.PostModelCritics;
@@ -17,11 +18,7 @@ import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelCritics
 import ru.protasov_dev.letmecodeinterviewtask.R;
 
 public class CriticsAdapter extends RecyclerView.Adapter<CriticsAdapter.ViewHolder>{
-    private PostModelCritics posts;
-
-    public CriticsAdapter(PostModelCritics posts) {
-        this.posts = posts;
-    }
+    private PostModelCritics postModelCritics;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -31,7 +28,7 @@ public class CriticsAdapter extends RecyclerView.Adapter<CriticsAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        final Result post = posts.getResults().get(position);
+        final Result post = postModelCritics.getResults().get(position);
         holder.criticName.setText(post.getDisplayName());
         holder.status.setText(post.getStatus());
 
@@ -62,9 +59,9 @@ public class CriticsAdapter extends RecyclerView.Adapter<CriticsAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        if (posts == null)
+        if (postModelCritics == null)
             return 0;
-        return posts.getNumResults();
+        return postModelCritics.getNumResults();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -80,5 +77,9 @@ public class CriticsAdapter extends RecyclerView.Adapter<CriticsAdapter.ViewHold
             status = itemView.findViewById(R.id.status);
             cardView = itemView.findViewById(R.id.card_view_critics);
         }
+    }
+
+    public void setPostModelCritics(PostModelCritics postModelCritics) {
+        this.postModelCritics = postModelCritics;
     }
 }

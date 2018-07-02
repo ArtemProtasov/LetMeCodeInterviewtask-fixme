@@ -1,8 +1,6 @@
 package ru.protasov_dev.letmecodeinterviewtask.Adapters;
 
-import android.content.Context;
 import android.content.Intent;
-import android.os.RecoverySystem;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,7 +12,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import java.text.DateFormat;
+import java.text.FieldPosition;
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -27,11 +27,7 @@ import ru.protasov_dev.letmecodeinterviewtask.R;
 
 public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHolder> {
 
-    private PostModelReviews posts;
-
-    public ReviewsAdapter(PostModelReviews posts) {
-        this.posts = posts;
-    }
+    private List<PostModelReviews> postModelReviews;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -41,10 +37,9 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final Result post = posts.getResults().get(position);
+        final Result post = postModelReviews.get(position).getResults().get(position);
 
         String date = post.getPublicationDate();
-
 
         holder.txtTitleReviewes.setText(post.getDisplayTitle());
         holder.txtSummaryShortReviewes.setText(post.getSummaryShort());
@@ -53,7 +48,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHold
 
         String URL;
 
-        if (post.getMultimedia().getSrc() != null) {
+        if (post.getMultimedia() != null) {
             URL = post.getMultimedia().getSrc();
         } else {
             URL = holder.imgReviewes.getContext().getString(R.string.src_search);
@@ -77,9 +72,9 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        if (posts == null)
+        if (postModelReviews == null)
             return 0;
-        return posts.getNumResults();
+        return postModelReviews.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -100,6 +95,12 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHold
             txtByline = itemView.findViewById(R.id.txt_byline);
             cardView = itemView.findViewById(R.id.cardView);
 
+        }
+    }
+
+    public void setPostModelReviews(List<PostModelReviews> postModelReviews) {
+        for (int i = 0; i < postModelReviews.size(); i++) {
+            this.postModelReviews.add(postModelReviews.get(i));
         }
     }
 }

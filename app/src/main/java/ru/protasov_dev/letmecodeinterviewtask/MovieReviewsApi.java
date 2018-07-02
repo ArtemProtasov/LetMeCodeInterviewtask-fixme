@@ -11,27 +11,16 @@ import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews
 
 public interface MovieReviewsApi {
     @GET("/svc/movies/v2/reviews/search.json")
-    Call<PostModelReviews> getAllReviews(@Query("api-key") String apiKey);
-
-    @GET("/svc/movies/v2/reviews/search.json")
-    Call<List<PostModelReviews>> getReviewsByKeywords(@Query("api-key") String apiKey,
-                                                      @Query("query") String keywords);
-
-    @GET("/svc/movies/v2/reviews/search.json")
-    Call<List<PostModelReviews>> getReviewsByDate(@Query("api-key") String apiKey,
-                                                  @Query("publication-date") String date);
-
-    @GET("/svc/movies/v2/reviews/search.json")
-    Call<List<PostModelReviews>> getReviewsByKeywordsAndDate(@Query("api-key") String apiKey,
-                                                             @Query("query") String keywords,
-                                                             @Query("publication-date") String date);
+    Call<PostModelReviews> getAllReviews(@Query("api-key") String apiKey,
+                                         @Query("query") String query,
+                                         @Query("reviewer") String reviewer,
+                                         @Query("publication-date") String publicationDate,
+                                         @Query("offset") int offset,
+                                         @Query("order") String order);
 
     @GET("/svc/movies/v2/reviews/search.json")
     Call<PostModelReviews> getCriticPost(@Query("api-key") String apiKey, @Query("reviewer") String reviewer);
 
-    @GET("/svc/movies/v2/critics/all.json")
-    Call<PostModelCritics> getAllCritics(@Query("api-key") String apiKey);
-
     @GET("/svc/movies/v2/critics/{name-critic}.json")
-    Call<PostModelCritics> getCriticsByName(@Path("name-critic") String name, @Query("api-key") String apiKey);
+    Call<PostModelCritics> getCritic(@Path("name-critic") String name, @Query("api-key") String apiKey);
 }

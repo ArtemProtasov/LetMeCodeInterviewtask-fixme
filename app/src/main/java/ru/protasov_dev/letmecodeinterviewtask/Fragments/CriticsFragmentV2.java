@@ -6,19 +6,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,39 +23,39 @@ import ru.protasov_dev.letmecodeinterviewtask.App;
 import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelCritics.PostModelCritics;
 import ru.protasov_dev.letmecodeinterviewtask.R;
 
-public class CriticsFragmentV2 extends Fragment{
+public class CriticsFragmentV2 extends Fragment implements View.OnClickListener {
 
-    private EditText nameCritics;
+    private EditText editTextNameCritics;
     private SwipeRefreshLayout swipeRefreshLayout;
     private PostModelCritics posts;
     private RecyclerView recyclerView;
+    private CriticsAdapter criticsAdapter;
+    private GridLayoutManager layoutManager;
+    private String nameCritic;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState){
+                             Bundle savedInstanceState) {
         return inflater.inflate(R.layout.critics_fragment, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        nameCritics = getView().findViewById(R.id.criticName);
-        swipeRefreshLayout = getView().findViewById(R.id.swipe_container_critics);
-        ImageButton clearNameCritics = getView().findViewById(R.id.clear_critics_name);
-
-        //При нажатии на кнопку "Очистки" поля - очищаем поле и проводим новый поиск
-        clearNameCritics.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                nameCritics.setText(null);
-                getCritics();
-            }
-        });
+        editTextNameCritics = view.findViewById(R.id.criticName);
+        swipeRefreshLayout = view.findViewById(R.id.swipe_container_critics);
+        view.findViewById(R.id.clear_critics_name).setOnClickListener(this);
+        criticsAdapter = new CriticsAdapter();
+        recyclerView = view.findViewById(R.id.recycler_critics);
+        layoutManager = new GridLayoutManager(getContext(), 2);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(criticsAdapter);
 
         //При нажатии Enter производим поиск по ключевым словам
-        nameCritics.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        editTextNameCritics.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if(keyEvent != null && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER){
+                if (keyEvent != null && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    nameCritic = editTextNameCritics.getText().toString();
                     getCritics();
                     return true;
                 }
@@ -68,7 +63,8 @@ public class CriticsFragmentV2 extends Fragment{
             }
         });
 
-        getCritics(); //При запуске фрагмента прогружаем посты
+        //Подгружаем список критиков и выводим
+        getCritics();
 
         //Устанавливаем слушатель и какими цветами будет переливаться кружочек на
         //Swipe-to-refresh
@@ -85,37 +81,38 @@ public class CriticsFragmentV2 extends Fragment{
         });
     }
 
-    private void getCritics(){
+    private void getCritics() {
+        if(nameCritic == null) {
+            nameCritic = "all";
+        }
 
-        App.getApi().getAllCritics(getString(R.string.api_key_nyt)).enqueue(new Callback<PostModelCritics>() {
+        App.getApi().getCritic(nameCritic, getString(R.string.api_key_nyt)).enqueue(new Callback<PostModelCritics>() {
             @Override
             public void onResponse(@NonNull Call<PostModelCritics> call, @NonNull Response<PostModelCritics> response) {
-                //posts.clear();
                 assert response.body() != null;
-
                 posts = response.body();
-
-                CriticsAdapter adapter = new CriticsAdapter(posts);
-
-                recyclerView = getView().findViewById(R.id.recycler_critics);
-
-                GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
-                recyclerView.setLayoutManager(layoutManager);
-
-                recyclerView.setAdapter(adapter);
-
+                criticsAdapter.setPostModelCritics(posts);
                 recyclerView.getAdapter().notifyDataSetChanged();
-
+                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
             public void onFailure(@NonNull Call<PostModelCritics> call, @NonNull Throwable t) {
                 Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
-                System.out.println(t);
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
+    }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.clear_critics_name:
+                editTextNameCritics.setText(null);
+                nameCritic = null;
+                getCritics();
+                break;
 
-        swipeRefreshLayout.setRefreshing(false);
+        }
     }
 }

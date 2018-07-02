@@ -11,7 +11,7 @@ public class Resource {
     private String type;
     @SerializedName("src")
     @Expose
-    private String src;
+    private String src = null;
     @SerializedName("height")
     @Expose
     private Integer height;

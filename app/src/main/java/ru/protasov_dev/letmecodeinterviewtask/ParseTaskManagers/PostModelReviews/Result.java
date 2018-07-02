@@ -37,7 +37,7 @@ public class Result {
     private Link link;
     @SerializedName("multimedia")
     @Expose
-    private Multimedia multimedia;
+    private Multimedia multimedia = null;
 
     public String getDisplayTitle() {
         return displayTitle;

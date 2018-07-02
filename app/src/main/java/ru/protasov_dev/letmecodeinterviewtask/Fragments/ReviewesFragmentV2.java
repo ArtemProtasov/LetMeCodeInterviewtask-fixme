@@ -9,21 +9,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -34,16 +31,21 @@ import ru.protasov_dev.letmecodeinterviewtask.App;
 import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.PostModelReviews;
 import ru.protasov_dev.letmecodeinterviewtask.R;
 
-public class ReviewesFragmentV2 extends Fragment {
-
-    //
-    private EditText keywords;
-    private EditText date;
-    private int offset = 0;
-    private Calendar Date = Calendar.getInstance();
+public class ReviewesFragmentV2 extends Fragment implements View.OnClickListener {
+    private EditText editTextKeywords;
+    private EditText editTextDate;
+    private Calendar calendarDate = Calendar.getInstance();
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
-    private PostModelReviews posts = new PostModelReviews();
+    private PostModelReviews postModelReviews = new PostModelReviews();
+    private ReviewsAdapter reviewsAdapter;
+    private LinearLayoutManager layoutManager;
+
+    public int offset = 0;
+    public String query;
+    public String reviewer;
+    public String publicationDate;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,79 +55,34 @@ public class ReviewesFragmentV2 extends Fragment {
 
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
-        keywords = view.findViewById(R.id.keyword);
-        date = getView().findViewById(R.id.data);
-        date.setInputType(InputType.TYPE_NULL); //Не выводим клавиатуру
-        swipeRefreshLayout = getView().findViewById(R.id.swipe_container);
-        ImageButton clearKeywords = getView().findViewById(R.id.clear_keywords);
-        ImageButton clearDate = getView().findViewById(R.id.clear_date);
-        ImageButton nextPage = getView().findViewById(R.id.next_page);
-        ImageButton prevPage = getView().findViewById(R.id.prev_page);
+        editTextKeywords = view.findViewById(R.id.keyword);
+        editTextDate = view.findViewById(R.id.data);
+        swipeRefreshLayout = view.findViewById(R.id.swipe_container);
+        editTextDate.setOnClickListener(this);
+        view.findViewById(R.id.clear_keywords).setOnClickListener(this);
+        view.findViewById(R.id.clear_date).setOnClickListener(this);
+        view.findViewById(R.id.next_page).setOnClickListener(this);
+        view.findViewById(R.id.prev_page).setOnClickListener(this);
 
-        //posts = new ArrayList<>();
+        reviewsAdapter = new ReviewsAdapter();
+        recyclerView = getView().findViewById(R.id.recycler_reviews);
+        layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(reviewsAdapter);
 
-        //Вызываем парсес
+        //Подгружаем рецензии
         getReviews();
 
-        //При клике на поле ввода даты - отображаем диалог выбора даты
-        date.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new DatePickerDialog(getContext(), d, Date.get(Calendar.YEAR), Date.get(Calendar.MONTH), Date.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });
-
         //При нажатии Enter производим поиск по ключевым словам
-        keywords.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        editTextKeywords.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if(keyEvent != null && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER){
+                if (keyEvent != null && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
                     // обработка нажатия Enter
                     getReviews();
                     return true;
                 }
                 return false;
-            }
-        });
-
-        //При нажатии на "Корзину" в Keywords - очищать Keywords
-        clearKeywords.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                keywords.setText(null);
-                getReviews();
-            }
-        });
-
-        //При нажатии на "Корзину" в Date - очищать Date
-        clearDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                date.setText(null);
-                getReviews();
-            }
-        });
-
-        //При нажатии на кнопку "Следующая страница" - подгружать следующую страницу
-        nextPage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                offset += 20;
-                getReviews();
-            }
-        });
-
-        //При нажатии на кнопку "Предыдущая страница" - подгружать предыдующу страницу
-        prevPage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Изначально offset == 0
-                if(offset >= 20){
-                    offset -= 20;
-                    getReviews();
-                } else {
-                    Snackbar.make(getView(), "You reached the top of the list", Snackbar.LENGTH_SHORT).show();
-                }
             }
         });
 
@@ -147,8 +104,10 @@ public class ReviewesFragmentV2 extends Fragment {
         //Преобразуем с помощью SimpleDateFormat дату в миллисекундах в следующий формат: ГОД/МЕСЯЦ/ДЕНЬ (так задано в ТЗ)
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd", Locale.US);
         //И сразу устанавливаем в поле ввода форматированную дату
-        String dateForSearch = formatter.format(Date.getTimeInMillis());
-        date.setText(dateForSearch);
+        String dateForSearch = formatter.format(calendarDate.getTimeInMillis());
+        editTextDate.setText(dateForSearch);
+        formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        publicationDate = formatter.format(calendarDate.getTimeInMillis());
         //Выполняем поиск при выборе даты
         getReviews();
 
@@ -157,27 +116,22 @@ public class ReviewesFragmentV2 extends Fragment {
     //Установка обработчика выбора даты
     private DatePickerDialog.OnDateSetListener d = new DatePickerDialog.OnDateSetListener() {
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            Date.set(Calendar.YEAR, year);
-            Date.set(Calendar.MONTH, monthOfYear);
-            Date.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            calendarDate.set(Calendar.YEAR, year);
+            calendarDate.set(Calendar.MONTH, monthOfYear);
+            calendarDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
             setInitialDate();
         }
     };
 
     private void getReviews() {
-        App.getApi().getAllReviews(getString(R.string.api_key_nyt)).enqueue(new Callback<PostModelReviews>() {
+        query = editTextKeywords.getText().toString();
+
+        App.getApi().getAllReviews(getString(R.string.api_key_nyt), query, reviewer, publicationDate, offset, "publication-date").enqueue(new Callback<PostModelReviews>() {
             @Override
             public void onResponse(@NonNull Call<PostModelReviews> call, @NonNull Response<PostModelReviews> response) {
                 assert response.body() != null;
-                posts = response.body();
-                ReviewsAdapter adapter = new ReviewsAdapter(posts);
-
-                recyclerView = getView().findViewById(R.id.recycler_reviews);
-
-                LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-                recyclerView.setLayoutManager(layoutManager);
-
-                recyclerView.setAdapter(adapter);
+                postModelReviews = response.body();
+                reviewsAdapter.setPostModelReviews(postModelReviews);
                 recyclerView.getAdapter().notifyDataSetChanged();
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -189,9 +143,40 @@ public class ReviewesFragmentV2 extends Fragment {
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
-
-
     }
 
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.data:
+                new DatePickerDialog(getContext(), d, calendarDate.get(Calendar.YEAR), calendarDate.get(Calendar.MONTH), calendarDate.get(Calendar.DAY_OF_MONTH)).show();
+                break;
+            case R.id.clear_keywords:
+                editTextKeywords.setText(null);
+                publicationDate = null;
+                getReviews();
+                break;
+            case R.id.clear_date:
+                editTextDate.setText(null);
+                getReviews();
+                break;
+            case R.id.next_page:
+                offset += 20;
+                getReviews();
+                break;
+            case R.id.prev_page:
+                //Изначально offset == 0
+                if (offset >= 20) {
+                    offset -= 20;
+                    getReviews();
+                } else {
+                    Snackbar.make(getView(), "You reached the top of the list", Snackbar.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
 }

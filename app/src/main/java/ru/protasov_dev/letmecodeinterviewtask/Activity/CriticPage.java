@@ -21,7 +21,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import ru.protasov_dev.letmecodeinterviewtask.Adapters.ReviewsAdapter;
 import ru.protasov_dev.letmecodeinterviewtask.App;
-import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelCritics.PostModelCritics;
 import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.PostModelReviews;
 import ru.protasov_dev.letmecodeinterviewtask.R;
 
@@ -32,7 +31,9 @@ public class CriticPage extends AppCompatActivity {// implements SwipeRefreshLay
     private int offset = 0;
 
     private RecyclerView recyclerView;
-    private PostModelReviews posts = new PostModelReviews();
+    private PostModelReviews postModelReviews = new PostModelReviews();
+    ReviewsAdapter reviewsAdapter;
+    LinearLayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,9 @@ public class CriticPage extends AppCompatActivity {// implements SwipeRefreshLay
                 finish();
             }
         });
+
+        reviewsAdapter = new ReviewsAdapter();
+        layoutManager = new LinearLayoutManager(CriticPage.this);
 
         CardView cardCritic = findViewById(R.id.card_critic);
         TextView nameCritic = findViewById(R.id.txt_name);
@@ -87,7 +91,7 @@ public class CriticPage extends AppCompatActivity {// implements SwipeRefreshLay
         prevPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(offset >= 20){
+                if (offset >= 20) {
                     offset -= 20;
                     //URL += "&offset=" + offset;
                     getCriticPosts();
@@ -115,20 +119,17 @@ public class CriticPage extends AppCompatActivity {// implements SwipeRefreshLay
 
     }
 
-    private void getCriticPosts(){
+    private void getCriticPosts() {
         App.getApi().getCriticPost(getString(R.string.api_key_nyt), name).enqueue(new Callback<PostModelReviews>() {
             @Override
             public void onResponse(Call<PostModelReviews> call, Response<PostModelReviews> response) {
                 assert response.body() != null;
-                posts = response.body();
-                ReviewsAdapter adapter = new ReviewsAdapter(posts);
-
+                postModelReviews = response.body();
+                reviewsAdapter.setPostModelReviews(postModelReviews);
                 recyclerView = findViewById(R.id.recycler_critic_page);
-
-                LinearLayoutManager layoutManager = new LinearLayoutManager(CriticPage.this);
                 recyclerView.setLayoutManager(layoutManager);
 
-                recyclerView.setAdapter(adapter);
+                recyclerView.setAdapter(reviewsAdapter);
                 recyclerView.getAdapter().notifyDataSetChanged();
             }
 
@@ -139,34 +140,4 @@ public class CriticPage extends AppCompatActivity {// implements SwipeRefreshLay
         });
         refreshLayout.setRefreshing(false);
     }
-
-//    //FIXME можно было распарсить и в AsyncTask
-//    //FIXME инициализация  RecyclerView после каждой загрузки
-//    @Override
-//    public void doSomething(String strJson) {
-//        // выводим целиком полученную json-строку
-//        Log.d("JSON: ", strJson);
-//
-//        //С помощью Gson будем разбирать json на составляющие
-//        GsonBuilder builder = new GsonBuilder();
-//        Gson gson = builder.create();
-//
-//        //Заполняем ParseTaskTwo нашими данными из JSON
-//        parseTaskTwo = gson.fromJson(strJson, ParseTaskTwo.class);
-//
-//        //В List получаем наш Result, основное, с чем будем работать
-//        results = parseTaskTwo.getResults();
-//
-//        RecyclerView recyclerView = findViewById(R.id.recycler_critic_page);
-//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-//        recyclerView.setLayoutManager(layoutManager);
-//        recyclerView.setHasFixedSize(true);
-//        MyCustomAdapterReviewes adapterReviewes = new MyCustomAdapterReviewes(initData());
-//        recyclerView.setAdapter(adapterReviewes);
-//    }
-
-    //FIXME абсолюто ненужный метод
-    //FIXME данные распарсить (Retrofit в помощь) сразу в требуюмую модель
-    //FIXME для фомата дат использовать DateFormat, а не replace и делать это можно в адаптере
-    //FIXME try/catch не нужен - в адаптере проверяещь не пуста ли url и в случае успеха грузишь картинку
 }

@@ -13,7 +13,7 @@ import android.webkit.WebView;
 import ru.protasov_dev.letmecodeinterviewtask.R;
 import ru.protasov_dev.letmecodeinterviewtask.WebView.WebViewClient;
 
-public class ReviewPage extends AppCompatActivity{
+public class ReviewPage extends AppCompatActivity {
     private String URL;
     private WebView webView;
     private Activity activity = this;
@@ -48,10 +48,10 @@ public class ReviewPage extends AppCompatActivity{
         webView.setWebViewClient(new WebViewClient());
         // указываем страницу загрузки
         webView.loadUrl(URL);
-        webView.setWebChromeClient(new WebChromeClient(){
+        webView.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
                 activity.setProgress(progress * 100);
-                if(progress == 100)
+                if (progress == 100)
                     activity.setTitle(articleTitle.replace("Read the New York Times ", ""));
             }
         });
@@ -59,7 +59,7 @@ public class ReviewPage extends AppCompatActivity{
 
     @Override
     public void onBackPressed() {
-        if(webView.canGoBack()) {
+        if (webView.canGoBack()) {
             webView.goBack();
         } else {
             super.onBackPressed();

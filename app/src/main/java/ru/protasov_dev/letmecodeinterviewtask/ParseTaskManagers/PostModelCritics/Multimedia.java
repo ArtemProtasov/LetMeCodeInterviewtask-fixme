@@ -7,7 +7,7 @@ public class Multimedia {
 
     @SerializedName("resource")
     @Expose
-    private Resource resource;
+    private Resource resource = null;
 
     public Resource getResource() {
         return resource;
