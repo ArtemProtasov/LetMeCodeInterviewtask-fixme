@@ -36,6 +36,7 @@ import ru.protasov_dev.letmecodeinterviewtask.R;
 
 public class ReviewesFragmentV2 extends Fragment {
 
+    //
     private EditText keywords;
     private EditText date;
     private int offset = 0;
@@ -52,7 +53,7 @@ public class ReviewesFragmentV2 extends Fragment {
 
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
-        keywords = getView().findViewById(R.id.keyword);
+        keywords = view.findViewById(R.id.keyword);
         date = getView().findViewById(R.id.data);
         date.setInputType(InputType.TYPE_NULL); //Не выводим клавиатуру
         swipeRefreshLayout = getView().findViewById(R.id.swipe_container);
@@ -178,16 +179,18 @@ public class ReviewesFragmentV2 extends Fragment {
 
                 recyclerView.setAdapter(adapter);
                 recyclerView.getAdapter().notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
             public void onFailure(@NonNull Call<PostModelReviews> call, @NonNull Throwable t) {
                 Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
                 System.out.println(t);
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
 
-        swipeRefreshLayout.setRefreshing(false);
+
     }
 
 

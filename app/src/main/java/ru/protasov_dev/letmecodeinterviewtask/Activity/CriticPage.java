@@ -169,37 +169,4 @@ public class CriticPage extends AppCompatActivity {// implements SwipeRefreshLay
     //FIXME данные распарсить (Retrofit в помощь) сразу в требуюмую модель
     //FIXME для фомата дат использовать DateFormat, а не replace и делать это можно в адаптере
     //FIXME try/catch не нужен - в адаптере проверяещь не пуста ли url и в случае успеха грузишь картинку
-//    private List<ReviewesElement> initData() {
-//        list = new ArrayList<>();
-//        String dateAndTime;
-//        for (int i = 0; i < results.size(); i++) {
-//            //Преобразуем дату и время в следующий формат: ГОД/МЕСЯЦ/ДЕНЬ ЧАС:МИНУТА:СЕКУНДА (так задано в ТЗ)
-//            //Тут я установил дату публикации. Если нужна дата обновления статьи, то
-//            //пишем за место getPublicationDate() -> getDateUpdated()
-//            //если нужно дата открытия, то -> getOpeningDate
-//            dateAndTime = results.get(i).getPublicationDate().replace("-", "/");
-//
-//
-//            try {
-//                list.add(new ReviewesElement(results.get(i).getDisplayTitle(),
-//                        results.get(i).getSummaryShort(),
-//                        dateAndTime,
-//                        results.get(i).getByline(),
-//                        results.get(i).getMultimedia().getSrc(),
-//                        this,
-//                        results.get(i).getLink().getSuggestedLinkText(),
-//                        results.get(i).getLink().getUrl()));
-//            } catch (NullPointerException e){
-//                list.add(new ReviewesElement(results.get(i).getDisplayTitle(),
-//                        results.get(i).getSummaryShort(),
-//                        dateAndTime,
-//                        results.get(i).getByline(),
-//                        getString(R.string.src_search),
-//                        this,
-//                        results.get(i).getLink().getSuggestedLinkText(),
-//                        results.get(i).getLink().getUrl()));
-//            }
-//        }
-//        return list;
-//    }
 }

@@ -32,13 +32,6 @@ public interface MovieReviewsApi {
     @GET("/svc/movies/v2/critics/all.json")
     Call<PostModelCritics> getAllCritics(@Query("api-key") String apiKey);
 
-
-    /**
-     *
-     * @param name Name critic
-     * @param apiKey Api key
-     * @return
-     */
     @GET("/svc/movies/v2/critics/{name-critic}.json")
     Call<PostModelCritics> getCriticsByName(@Path("name-critic") String name, @Query("api-key") String apiKey);
 }

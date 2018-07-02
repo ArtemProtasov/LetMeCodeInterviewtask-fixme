@@ -13,18 +13,23 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import ru.protasov_dev.letmecodeinterviewtask.Activity.ReviewPage;
 import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.PostModelReviews;
 import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.Result;
 import ru.protasov_dev.letmecodeinterviewtask.R;
 
-public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHolder>{
+public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHolder> {
 
     private PostModelReviews posts;
 
-    public ReviewsAdapter(PostModelReviews posts){
+    public ReviewsAdapter(PostModelReviews posts) {
         this.posts = posts;
     }
 
@@ -37,17 +42,23 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Result post = posts.getResults().get(position);
+
+        String date = post.getPublicationDate();
+
+
         holder.txtTitleReviewes.setText(post.getDisplayTitle());
         holder.txtSummaryShortReviewes.setText(post.getSummaryShort());
-        holder.txtDateReviewes.setText(post.getPublicationDate());
+        holder.txtDateReviewes.setText(date);
         holder.txtByline.setText(post.getByline());
 
         String URL;
 
-        if(post.getMultimedia().getSrc() != null)
+        if (post.getMultimedia().getSrc() != null) {
             URL = post.getMultimedia().getSrc();
-        else
+        } else {
             URL = holder.imgReviewes.getContext().getString(R.string.src_search);
+        }
+
         Glide.with(holder.imgReviewes.getContext())
                 .load(URL)
                 .into(holder.imgReviewes);
@@ -66,7 +77,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        if(posts == null)
+        if (posts == null)
             return 0;
         return posts.getNumResults();
     }
