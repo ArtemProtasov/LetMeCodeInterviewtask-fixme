@@ -19,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -46,7 +45,6 @@ public class ReviewesFragmentV2 extends Fragment implements View.OnClickListener
     public String reviewer;
     public String publicationDate;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -65,7 +63,7 @@ public class ReviewesFragmentV2 extends Fragment implements View.OnClickListener
         view.findViewById(R.id.prev_page).setOnClickListener(this);
 
         reviewsAdapter = new ReviewsAdapter();
-        recyclerView = getView().findViewById(R.id.recycler_reviews);
+        recyclerView = view.findViewById(R.id.recycler_reviews);
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(reviewsAdapter);
@@ -138,7 +136,7 @@ public class ReviewesFragmentV2 extends Fragment implements View.OnClickListener
 
             @Override
             public void onFailure(@NonNull Call<PostModelReviews> call, @NonNull Throwable t) {
-                Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.no_internet, Toast.LENGTH_SHORT).show();
                 System.out.println(t);
                 swipeRefreshLayout.setRefreshing(false);
             }

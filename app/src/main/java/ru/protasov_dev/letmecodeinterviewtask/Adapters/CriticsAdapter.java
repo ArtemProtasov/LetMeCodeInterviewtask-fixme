@@ -34,13 +34,17 @@ public class CriticsAdapter extends RecyclerView.Adapter<CriticsAdapter.ViewHold
 
         final String URL;
 
-        if(post.getMultimedia() == null)
-            URL = holder.criticPhoto.getContext().getString(R.string.src_user_avatar);
-        else
+        if(post.getMultimedia() != null) {
             URL = post.getMultimedia().getResource().getSrc();
+        } else {
+            URL = null;
+        }
+
+        RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.avatar).centerCrop();
 
         Glide.with(holder.criticPhoto.getContext())
                 .load(URL)
+                .apply(requestOptions)
                 .into(holder.criticPhoto);
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {

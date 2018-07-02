@@ -10,12 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
-import java.text.DateFormat;
-import java.text.FieldPosition;
 import java.text.ParseException;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -27,7 +26,8 @@ import ru.protasov_dev.letmecodeinterviewtask.R;
 
 public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHolder> {
 
-    private List<PostModelReviews> postModelReviews;
+    private PostModelReviews postModelReviews;
+    private List<PostModelReviews> postModelReviewsList = new ArrayList<>();
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -35,27 +35,42 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHold
         return new ViewHolder(v);
     }
 
+    public void addItem(PostModelReviews postModelReviews){
+        postModelReviewsList.add(postModelReviews);
+    }
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final Result post = postModelReviews.get(position).getResults().get(position);
+        final Result post = postModelReviews.getResults().get(position);
 
-        String date = post.getPublicationDate();
+        String sDate = post.getPublicationDate();
+
+        SimpleDateFormat commonForman = new SimpleDateFormat("yyyy-mm-dd", Locale.US);
+        Date date = null;
+        try {
+            date = commonForman.parse(sDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        SimpleDateFormat reformatted = new SimpleDateFormat("yyyy/mm/dd", Locale.US);
+        String formatDate = reformatted.format(date);
 
         holder.txtTitleReviewes.setText(post.getDisplayTitle());
         holder.txtSummaryShortReviewes.setText(post.getSummaryShort());
-        holder.txtDateReviewes.setText(date);
+        holder.txtDateReviewes.setText(formatDate);
         holder.txtByline.setText(post.getByline());
 
-        String URL;
+        String URL = null;
 
         if (post.getMultimedia() != null) {
             URL = post.getMultimedia().getSrc();
-        } else {
-            URL = holder.imgReviewes.getContext().getString(R.string.src_search);
         }
+
+        RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.image).centerCrop();
 
         Glide.with(holder.imgReviewes.getContext())
                 .load(URL)
+                .apply(requestOptions)
                 .into(holder.imgReviewes);
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -74,7 +89,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHold
     public int getItemCount() {
         if (postModelReviews == null)
             return 0;
-        return postModelReviews.size();
+        return postModelReviews.getNumResults();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -98,9 +113,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHold
         }
     }
 
-    public void setPostModelReviews(List<PostModelReviews> postModelReviews) {
-        for (int i = 0; i < postModelReviews.size(); i++) {
-            this.postModelReviews.add(postModelReviews.get(i));
-        }
+    public void setPostModelReviews(PostModelReviews postModelReviews) {
+        this.postModelReviews = postModelReviews;
     }
 }

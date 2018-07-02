@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -63,15 +64,21 @@ public class CriticPage extends AppCompatActivity {// implements SwipeRefreshLay
         reviewsAdapter = new ReviewsAdapter();
         layoutManager = new LinearLayoutManager(CriticPage.this);
 
-        CardView cardCritic = findViewById(R.id.card_critic);
         TextView nameCritic = findViewById(R.id.txt_name);
         nameCritic.setText(name);
         TextView statusCritic = findViewById(R.id.txt_status);
         statusCritic.setText(status);
         ImageView imageView = findViewById(R.id.img_photo);
+
+        RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.avatar).centerCrop();
+
         Glide.with(this)
                 .load(url_photo)
+                .apply(requestOptions)
                 .into(imageView);
+
+
+
         TextView bioCritic = findViewById(R.id.txt_bio);
         bioCritic.setText(bio.replace("<br/>", " ")); //У A. O. Scott встречаются html теги в БИО. Заменю на пробелы
 

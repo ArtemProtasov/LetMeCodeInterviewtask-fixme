@@ -98,7 +98,7 @@ public class CriticsFragmentV2 extends Fragment implements View.OnClickListener 
 
             @Override
             public void onFailure(@NonNull Call<PostModelCritics> call, @NonNull Throwable t) {
-                Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.no_internet, Toast.LENGTH_SHORT).show();
                 swipeRefreshLayout.setRefreshing(false);
             }
         });

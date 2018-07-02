@@ -22,4 +22,7 @@
     <string name="desc_image_button">Image Button</string>
 
     <string name="loading">Loading...</string>
+
+    <string name="try_again">Try again</string>
+    <string name="no_internet">An error has occurred. Check your Internet connection</string>
 </resources>
