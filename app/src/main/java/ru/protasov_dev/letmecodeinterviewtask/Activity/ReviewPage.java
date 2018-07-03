@@ -31,7 +31,9 @@ public class ReviewPage extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         setTitle(getString(R.string.loading));
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

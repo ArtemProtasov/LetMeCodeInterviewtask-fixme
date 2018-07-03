@@ -30,6 +30,7 @@ public class CriticsFragmentV2 extends Fragment implements View.OnClickListener 
     private PostModelCritics posts;
     private RecyclerView recyclerView;
     private CriticsAdapter criticsAdapter;
+    private GridLayoutManager layoutManager;
     private String nameCritic;
 
     @Override
@@ -45,7 +46,7 @@ public class CriticsFragmentV2 extends Fragment implements View.OnClickListener 
         view.findViewById(R.id.clear_critics_name).setOnClickListener(this);
         criticsAdapter = new CriticsAdapter();
         recyclerView = view.findViewById(R.id.recycler_critics);
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
+        layoutManager = new GridLayoutManager(getContext(), 2);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(criticsAdapter);
 

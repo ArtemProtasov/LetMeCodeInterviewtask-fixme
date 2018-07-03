@@ -1,5 +1,6 @@
 package ru.protasov_dev.letmecodeinterviewtask.Activity;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -9,6 +10,9 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import ru.protasov_dev.letmecodeinterviewtask.Adapters.ViewPagerAdapter;

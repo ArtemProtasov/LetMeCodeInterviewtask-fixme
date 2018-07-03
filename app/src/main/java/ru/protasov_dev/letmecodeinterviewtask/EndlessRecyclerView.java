@@ -8,8 +8,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 
 public class EndlessRecyclerView extends RecyclerView {
-    private int visibleItemCount, totalItemCount, pastVisiblesItems;
-    private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
     private OnLoadMoreListener onLoadMoreListener;
 
@@ -29,7 +27,7 @@ public class EndlessRecyclerView extends RecyclerView {
     }
 
     private void init() {
-        recyclerView = findViewById(R.id.recycler_reviews);
+        RecyclerView recyclerView = findViewById(R.id.recycler_reviews);
 
         //Использовать линейный менеджер компановки
         layoutManager = new LinearLayoutManager(getContext());
@@ -40,9 +38,9 @@ public class EndlessRecyclerView extends RecyclerView {
     public void onScrolled(int dx, int dy) {
         super.onScrolled(dx, dy);
         if (dy > 0) {
-            visibleItemCount = layoutManager.getChildCount();
-            totalItemCount = layoutManager.getItemCount();
-            pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+            int visibleItemCount = layoutManager.getChildCount();
+            int totalItemCount = layoutManager.getItemCount();
+            int pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
             if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                 Log.d("EndlessRecyclerView", "Call load more");
                 if (onLoadMoreListener != null) {

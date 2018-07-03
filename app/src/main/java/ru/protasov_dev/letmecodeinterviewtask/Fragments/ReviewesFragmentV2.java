@@ -87,6 +87,7 @@ public class ReviewesFragmentV2 extends Fragment implements View.OnClickListener
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

@@ -30,6 +30,8 @@ public class CriticPage extends AppCompatActivity implements View.OnClickListene
     private RecyclerViewAdapter recyclerViewAdapter;
     private int currentPage = 0;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
