@@ -1,7 +1,5 @@
 package ru.protasov_dev.letmecodeinterviewtask;
 
-import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -14,7 +12,6 @@ public interface MovieReviewsApi {
     Call<PostModelReviews> getAllReviews(@Query("api-key") String apiKey,
                                          @Query("query") String query,
                                          @Query("reviewer") String reviewer,
-                                         @Query("publication-date") String publicationDate,
                                          @Query("offset") int offset,
                                          @Query("order") String order);
 

@@ -25,4 +25,7 @@
 
     <string name="try_again">Try again</string>
     <string name="no_internet">An error has occurred. Check your Internet connection</string>
+    <string name="no_element">There is no such element</string>
+
+    <string name="order_reviewes">by-publication-date</string>
 </resources>

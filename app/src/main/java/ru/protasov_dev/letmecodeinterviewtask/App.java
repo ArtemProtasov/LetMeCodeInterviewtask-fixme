@@ -11,20 +11,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class App extends Application{
 
-    private Retrofit retrofit;
     private static MovieReviewsApi movieReviewsApi;
+    private static final String BASE_URL = "https://api.nytimes.com";
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy/MM/dd")
-                .create();
-
-        retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.nytimes.com")
-                .addConverterFactory(GsonConverterFactory.create(gson))
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         movieReviewsApi = retrofit.create(MovieReviewsApi.class);

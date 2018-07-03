@@ -35,7 +35,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ViewHold
         return new ViewHolder(v);
     }
 
-    public void addItem(PostModelReviews postModelReviews){
+    public void addItem(PostModelReviews postModelReviews) {
         postModelReviewsList.add(postModelReviews);
     }
 

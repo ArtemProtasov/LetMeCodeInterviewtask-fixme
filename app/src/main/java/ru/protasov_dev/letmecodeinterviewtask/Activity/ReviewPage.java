@@ -14,7 +14,6 @@ import ru.protasov_dev.letmecodeinterviewtask.R;
 import ru.protasov_dev.letmecodeinterviewtask.WebView.WebViewClient;
 
 public class ReviewPage extends AppCompatActivity {
-    private String URL;
     private WebView webView;
     private Activity activity = this;
     private String articleTitle;
@@ -25,7 +24,7 @@ public class ReviewPage extends AppCompatActivity {
         setContentView(R.layout.activity_review_page);
 
         Intent intent = getIntent();
-        URL = intent.getStringExtra("URL");
+        String URL = intent.getStringExtra("URL");
         articleTitle = intent.getStringExtra("ARTICLE_TITLE");
 
         //Устанавливаем наш кастомный тулбар

@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -38,7 +37,6 @@ public class ReviewesFragmentV2 extends Fragment implements View.OnClickListener
     private RecyclerView recyclerView;
     private PostModelReviews postModelReviews = new PostModelReviews();
     private ReviewsAdapter reviewsAdapter;
-    private LinearLayoutManager layoutManager;
 
     public int offset = 0;
     public String query;
@@ -54,17 +52,17 @@ public class ReviewesFragmentV2 extends Fragment implements View.OnClickListener
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         editTextKeywords = view.findViewById(R.id.keyword);
-        editTextDate = view.findViewById(R.id.data);
+        //editTextDate = view.findViewById(R.id.date);
         swipeRefreshLayout = view.findViewById(R.id.swipe_container);
         editTextDate.setOnClickListener(this);
         view.findViewById(R.id.clear_keywords).setOnClickListener(this);
-        view.findViewById(R.id.clear_date).setOnClickListener(this);
-        view.findViewById(R.id.next_page).setOnClickListener(this);
-        view.findViewById(R.id.prev_page).setOnClickListener(this);
+        //view.findViewById(R.id.clear_date).setOnClickListener(this);
+        //view.findViewById(R.id.next_page).setOnClickListener(this);
+        //view.findViewById(R.id.prev_page).setOnClickListener(this);
 
         reviewsAdapter = new ReviewsAdapter();
         recyclerView = view.findViewById(R.id.recycler_reviews);
-        layoutManager = new LinearLayoutManager(getContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(reviewsAdapter);
 
@@ -124,7 +122,7 @@ public class ReviewesFragmentV2 extends Fragment implements View.OnClickListener
     private void getReviews() {
         query = editTextKeywords.getText().toString();
 
-        App.getApi().getAllReviews(getString(R.string.api_key_nyt), query, reviewer, publicationDate, offset, "publication-date").enqueue(new Callback<PostModelReviews>() {
+        App.getApi().getAllReviews(getString(R.string.api_key_nyt), query, reviewer, offset, "publication-date").enqueue(new Callback<PostModelReviews>() {
             @Override
             public void onResponse(@NonNull Call<PostModelReviews> call, @NonNull Response<PostModelReviews> response) {
                 assert response.body() != null;
@@ -147,31 +145,31 @@ public class ReviewesFragmentV2 extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.data:
-                new DatePickerDialog(getContext(), d, calendarDate.get(Calendar.YEAR), calendarDate.get(Calendar.MONTH), calendarDate.get(Calendar.DAY_OF_MONTH)).show();
-                break;
+//            case R.id.data:
+//                new DatePickerDialog(getContext(), d, calendarDate.get(Calendar.YEAR), calendarDate.get(Calendar.MONTH), calendarDate.get(Calendar.DAY_OF_MONTH)).show();
+//                break;
             case R.id.clear_keywords:
                 editTextKeywords.setText(null);
                 publicationDate = null;
                 getReviews();
                 break;
-            case R.id.clear_date:
-                editTextDate.setText(null);
-                getReviews();
-                break;
-            case R.id.next_page:
-                offset += 20;
-                getReviews();
-                break;
-            case R.id.prev_page:
-                //Изначально offset == 0
-                if (offset >= 20) {
-                    offset -= 20;
-                    getReviews();
-                } else {
-                    Snackbar.make(getView(), "You reached the top of the list", Snackbar.LENGTH_SHORT).show();
-                }
-                break;
+//            case R.id.clear_date:
+//                editTextDate.setText(null);
+//                getReviews();
+//                break;
+//            case R.id.next_page:
+//                offset += 20;
+//                getReviews();
+//                break;
+//            case R.id.prev_page:
+//                //Изначально offset == 0
+//                if (offset >= 20) {
+//                    offset -= 20;
+//                    getReviews();
+//                } else {
+//                    Snackbar.make(getView(), "You reached the top of the list", Snackbar.LENGTH_SHORT).show();
+//                }
+//                break;
             default:
                 Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
                 break;

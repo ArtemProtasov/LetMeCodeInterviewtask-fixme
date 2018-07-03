@@ -10,12 +10,11 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Toast;
 
 import ru.protasov_dev.letmecodeinterviewtask.Adapters.ViewPagerAdapter;
 import ru.protasov_dev.letmecodeinterviewtask.Fragments.CriticsFragmentV2;
-import ru.protasov_dev.letmecodeinterviewtask.Fragments.ReviewesFragmentV2;
 import ru.protasov_dev.letmecodeinterviewtask.R;
+import ru.protasov_dev.letmecodeinterviewtask.ReviewesFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isOnline(){
+    private boolean isOnline() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnectedOrConnecting();
@@ -56,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupViewPager() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new ReviewesFragmentV2(), "Reviewes"); //Фрагмент ReviewesFragmentV2
+        adapter.addFragment(new ReviewesFragment(), "Reviewes"); //Фрагмент ReviewesFragmentV2
         adapter.addFragment(new CriticsFragmentV2(), "Critics");  //Фрагмент CriticsFragmentV2
         viewPager.setAdapter(adapter);
     }
