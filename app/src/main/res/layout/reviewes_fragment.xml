@@ -66,7 +66,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/keyword">
 
-        <ru.protasov_dev.letmecodeinterviewtask.EndlessRecyclerView
+        <ru.protasov_dev.letmecodeinterviewtask.EndlessRecyclerViewReviews
             android:id="@+id/recycler_reviews"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

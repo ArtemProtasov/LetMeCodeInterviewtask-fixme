@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.CardView;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +13,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.List;
-import java.util.Objects;
-
-import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -32,7 +26,7 @@ import static android.R.color.holo_green_light;
 import static android.R.color.holo_orange_light;
 import static android.R.color.holo_red_light;
 
-public class ReviewesFragment extends Fragment implements EndlessRecyclerView.OnLoadMoreListener, ReviewesListAdapter.ReviewesListener {
+public class ReviewesFragment extends Fragment implements EndlessRecyclerViewReviews.OnLoadMoreListener, ReviewesListAdapter.ReviewesListener {
 
     private int currentPage = 0;
 
@@ -52,7 +46,7 @@ public class ReviewesFragment extends Fragment implements EndlessRecyclerView.On
         swipeRefreshLayout = view.findViewById(R.id.swipe_container);
         etKeywords = view.findViewById(R.id.keyword);
 
-        EndlessRecyclerView recyclerView = view.findViewById(R.id.recycler_reviews);
+        EndlessRecyclerViewReviews recyclerView = view.findViewById(R.id.recycler_reviews);
         reviewesListAdapter = new ReviewesListAdapter(this);
         recyclerView.setAdapter(reviewesListAdapter);
         recyclerView.setOnLoadMoreListener(this);

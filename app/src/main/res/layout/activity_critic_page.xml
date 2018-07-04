@@ -102,23 +102,10 @@
         android:id="@+id/swipe_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <!--<ru.protasov_dev.letmecodeinterviewtask.EndlessRecyclerView-->
-            <!--android:id="@+id/recycler_critics_page"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_marginTop="-8dp"/>-->
-        <!--<ru.protasov_dev.letmecodeinterviewtask.EndlessRecyclerView-->
-            <!--android:id="@+id/recycler_critics_page"-->
-            <!---->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:layout_marginTop="-8dp"/>-->
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_critic_page"
+        <ru.protasov_dev.letmecodeinterviewtask.EndlessRecyclerViewCriticPage
+            android:id="@+id/recycler_critics_page"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="-8dp"/>
+            android:layout_centerHorizontal="true"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

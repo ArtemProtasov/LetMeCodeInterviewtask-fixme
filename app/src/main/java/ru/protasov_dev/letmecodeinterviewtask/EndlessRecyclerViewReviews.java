@@ -7,21 +7,21 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
 
-public class EndlessRecyclerView extends RecyclerView {
+public class EndlessRecyclerViewReviews extends RecyclerView {
     private LinearLayoutManager layoutManager;
     private OnLoadMoreListener onLoadMoreListener;
 
-    public EndlessRecyclerView(Context context) {
+    public EndlessRecyclerViewReviews(Context context) {
         super(context);
         init();
     }
 
-    public EndlessRecyclerView(Context context, @Nullable AttributeSet attrs) {
+    public EndlessRecyclerViewReviews(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public EndlessRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public EndlessRecyclerViewReviews(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
     }

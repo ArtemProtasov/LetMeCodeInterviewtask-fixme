@@ -18,20 +18,19 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import ru.protasov_dev.letmecodeinterviewtask.App;
-import ru.protasov_dev.letmecodeinterviewtask.EndlessRecyclerView;
+import ru.protasov_dev.letmecodeinterviewtask.EndlessRecyclerViewCriticPage;
 import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.PostModelReviews;
 import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.Result;
 import ru.protasov_dev.letmecodeinterviewtask.R;
 import ru.protasov_dev.letmecodeinterviewtask.ReviewesListAdapter;
 
-public class CriticPage extends AppCompatActivity {//implements EndlessRecyclerView.OnLoadMoreListener {
+public class CriticPage extends AppCompatActivity implements EndlessRecyclerViewCriticPage.OnLoadMoreListener, ReviewesListAdapter.ReviewesListener {
     private SwipeRefreshLayout refreshLayout;
 
     private String name;
     private int currentPage = 0;
     private ReviewesListAdapter reviewesListAdapter;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private RecyclerView recyclerView;
+    private EndlessRecyclerViewCriticPage recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,18 +79,19 @@ public class CriticPage extends AppCompatActivity {//implements EndlessRecyclerV
             }
         });
 
-        reviewesListAdapter = new ReviewesListAdapter();
+        reviewesListAdapter = new ReviewesListAdapter(this);
+        recyclerView = findViewById(R.id.recycler_critics_page);
         recyclerView.setAdapter(reviewesListAdapter);
-        //recyclerView.setOnLoadMoreListener(this);
+        recyclerView.setOnLoadMoreListener(this);
 
         getData(false); //При запуске активити прогружаем посты
     }
 
-//    @Override
-//    public void onLoadMore() {
-//        currentPage += 20;
-//        getData(false);
-//    }
+    @Override
+    public void onLoadMore() {
+        currentPage += 20;
+        getData(false);
+    }
 
     private void getData(boolean clear) {
         if (clear) {
@@ -103,14 +103,23 @@ public class CriticPage extends AppCompatActivity {//implements EndlessRecyclerV
                 if(response.body() != null) {
                     reviewesListAdapter.addItems(response.body().getResults());
                 }
-                swipeRefreshLayout.setRefreshing(false);
+                refreshLayout.setRefreshing(false);
             }
 
             @Override
             public void onFailure(Call<PostModelReviews> call, Throwable t) {
                 t.printStackTrace();
-                swipeRefreshLayout.setRefreshing(false);
+                refreshLayout.setRefreshing(false);
             }
         });
+    }
+
+
+    @Override
+    public void onReviewesItemClick(Result item) {
+        Intent startReviewPage = new Intent(this, ReviewPage.class)
+                .putExtra("URL", item.getLink().getUrl())
+                .putExtra("ARTICLE_TITLE", item.getDisplayTitle());
+        startActivity(startReviewPage);
     }
 }
