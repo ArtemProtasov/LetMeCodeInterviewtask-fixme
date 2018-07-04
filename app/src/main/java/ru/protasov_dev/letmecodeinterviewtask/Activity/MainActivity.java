@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupViewPager() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new ReviewesFragment(), "Reviewes"); //Фрагмент ReviewesFragmentV2
+        adapter.addFragment(new ReviewesFragment(), "Reviews"); //Фрагмент ReviewesFragmentV2
         adapter.addFragment(new CriticsFragmentV2(), "Critics");  //Фрагмент CriticsFragmentV2
         viewPager.setAdapter(adapter);
     }

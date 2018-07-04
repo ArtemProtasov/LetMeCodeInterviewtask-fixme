@@ -18,17 +18,20 @@ import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews
 
 public class ReviewesListAdapter extends RecyclerView.Adapter<ReviewesListAdapter.ReviewesViewHolder> {
 
-    private List<Result> items;
+    private List<Result> items = null;
 
-    interface ReviewesListener {
-        void onReviewesItemClick(int position);
+    public interface ReviewesListener {
+        void onReviewesItemClick(Result item);
     }
 
     private ReviewesListener listener;
 
-    public ReviewesListAdapter(List<Result> items, ReviewesListener reviewesListener) {
+    public ReviewesListAdapter(){
         super();
-        this.items = items;
+    }
+
+    public ReviewesListAdapter(ReviewesListener reviewesListener) {
+        super();
         listener = reviewesListener;
     }
 
@@ -42,7 +45,7 @@ public class ReviewesListAdapter extends RecyclerView.Adapter<ReviewesListAdapte
     @Override
     public void onBindViewHolder(final ReviewesViewHolder holder, int position) {
         Context context = holder.itemView.getContext();
-        Result item = items.get(position);
+        final Result item = items.get(position);
 
         if (item != null) {
             String URL = null;
@@ -87,7 +90,7 @@ public class ReviewesListAdapter extends RecyclerView.Adapter<ReviewesListAdapte
             @Override
             public void onClick(View view) {
                 if (listener != null) {
-                    listener.onReviewesItemClick(holder.getAdapterPosition());
+                    listener.onReviewesItemClick(item);
                 }
             }
         });
@@ -111,6 +114,15 @@ public class ReviewesListAdapter extends RecyclerView.Adapter<ReviewesListAdapte
     public void updateItems(List<Result> items) {
         if (this.items != null) {
             this.items.clear();
+            this.items.addAll(items);
+            notifyDataSetChanged();
+        } else {
+            setItems(items);
+        }
+    }
+
+    public void addItems(List<Result> items) {
+        if(this.items != null) {
             this.items.addAll(items);
             notifyDataSetChanged();
         } else {

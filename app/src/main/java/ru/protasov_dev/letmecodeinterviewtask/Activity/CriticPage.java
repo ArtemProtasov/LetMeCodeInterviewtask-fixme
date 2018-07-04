@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,14 +22,16 @@ import ru.protasov_dev.letmecodeinterviewtask.EndlessRecyclerView;
 import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.PostModelReviews;
 import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.Result;
 import ru.protasov_dev.letmecodeinterviewtask.R;
+import ru.protasov_dev.letmecodeinterviewtask.ReviewesListAdapter;
 
-public class CriticPage extends AppCompatActivity implements View.OnClickListener, EndlessRecyclerView.OnLoadMoreListener, Callback<PostModelReviews> {// implements SwipeRefreshLayout.OnRefreshListener, ParseTaskReviewes.MyCustomCallBack{
+public class CriticPage extends AppCompatActivity {//implements EndlessRecyclerView.OnLoadMoreListener {
     private SwipeRefreshLayout refreshLayout;
 
     private String name;
     private int currentPage = 0;
-
-
+    private ReviewesListAdapter reviewesListAdapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,45 +73,44 @@ public class CriticPage extends AppCompatActivity implements View.OnClickListene
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getData(true, currentPage);
+                getData(true);
             }
         });
 
-        getData(false, currentPage); //При запуске активити прогружаем посты
+        reviewesListAdapter = new ReviewesListAdapter();
+        recyclerView.setAdapter(reviewesListAdapter);
+        //recyclerView.setOnLoadMoreListener(this);
+
+        getData(false); //При запуске активити прогружаем посты
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
+//    @Override
+//    public void onLoadMore() {
+//        currentPage += 20;
+//        getData(false);
+//    }
 
-        }
-    }
-
-    @Override
-    public void onResponse(Call<PostModelReviews> call, Response<PostModelReviews> response) {
-        PostModelReviews postModelReviews = response.body();
-        for (Result result : postModelReviews.getResults()) {
-        }
-    }
-
-    @Override
-    public void onFailure(Call<PostModelReviews> call, Throwable t) {
-        t.printStackTrace();
-    }
-
-    @Override
-    public void onLoadMore() {
-        currentPage += 20;
-        getData(false, currentPage);
-    }
-
-    private void getData(boolean clear, int offset) {
+    private void getData(boolean clear) {
         if (clear) {
+            reviewesListAdapter.clearItems();
         }
-        App.getApi().getCriticPost(getString(R.string.api_key_nyt), name);
+        App.getApi().getCriticPost(getString(R.string.api_key_nyt), name, currentPage).enqueue(new Callback<PostModelReviews>() {
+            @Override
+            public void onResponse(Call<PostModelReviews> call, Response<PostModelReviews> response) {
+                if(response.body() != null) {
+                    reviewesListAdapter.addItems(response.body().getResults());
+                }
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onFailure(Call<PostModelReviews> call, Throwable t) {
+                t.printStackTrace();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 }

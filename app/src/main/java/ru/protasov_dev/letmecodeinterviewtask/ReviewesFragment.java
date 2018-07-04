@@ -12,10 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.OnClick;
 import retrofit2.Call;
@@ -30,15 +32,13 @@ import static android.R.color.holo_green_light;
 import static android.R.color.holo_orange_light;
 import static android.R.color.holo_red_light;
 
-public class ReviewesFragment extends Fragment implements View.OnClickListener, EndlessRecyclerView.OnLoadMoreListener, Callback<PostModelReviews>, ReviewesListAdapter.ReviewesListener {
+public class ReviewesFragment extends Fragment implements EndlessRecyclerView.OnLoadMoreListener, ReviewesListAdapter.ReviewesListener {
 
     private int currentPage = 0;
 
     private EditText etKeywords;
     private ReviewesListAdapter reviewesListAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private EndlessRecyclerView recyclerView;
-    private List<Result> results;
 
     @Nullable
     @Override
@@ -49,13 +49,11 @@ public class ReviewesFragment extends Fragment implements View.OnClickListener, 
     @SuppressLint("ResourceAsColor")
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        view.findViewById(R.id.clear_keywords).setOnClickListener(this);
         swipeRefreshLayout = view.findViewById(R.id.swipe_container);
         etKeywords = view.findViewById(R.id.keyword);
-        etKeywords.setOnClickListener(this);
 
-        recyclerView = view.findViewById(R.id.recycler_reviews);
-        reviewesListAdapter = new ReviewesListAdapter(results, this);
+        EndlessRecyclerView recyclerView = view.findViewById(R.id.recycler_reviews);
+        reviewesListAdapter = new ReviewesListAdapter(this);
         recyclerView.setAdapter(reviewesListAdapter);
         recyclerView.setOnLoadMoreListener(this);
 
@@ -80,17 +78,17 @@ public class ReviewesFragment extends Fragment implements View.OnClickListener, 
                 return false;
             }
         });
-        getData(null, null, false, currentPage);
-    }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.clear_keywords:
+        ImageButton editTextClearKeyword = view.findViewById(R.id.clear_keywords);
+        editTextClearKeyword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 etKeywords.setText(null);
                 getData(null, null, true, 0);
-                break;
-        }
+            }
+        });
+
+        getData(null, null, false, currentPage);
     }
 
     @Override
@@ -103,29 +101,29 @@ public class ReviewesFragment extends Fragment implements View.OnClickListener, 
         if (clear) {
             reviewesListAdapter.clearItems();
         }
-        App.getApi().getAllReviews(getString(R.string.api_key_nyt), etKeywords.getText().toString(), reviewer, offset, order).enqueue(this);
+
+        App.getApi().getAllReviews(getString(R.string.api_key_nyt), etKeywords.getText().toString(), reviewer, offset, order).enqueue(new Callback<PostModelReviews>() {
+            @Override
+            public void onResponse(Call<PostModelReviews> call, Response<PostModelReviews> response) {
+                if(response.body() != null) {
+                    reviewesListAdapter.addItems(response.body().getResults());
+                }
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onFailure(Call<PostModelReviews> call, Throwable t) {
+                t.printStackTrace();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     @Override
-    public void onResponse(Call<PostModelReviews> call, Response<PostModelReviews> response) {
-        results = response.body().getResults();
-
-        reviewesListAdapter.updateItems(results);
-
-        swipeRefreshLayout.setRefreshing(false);
-    }
-
-    @Override
-    public void onFailure(Call<PostModelReviews> call, Throwable t) {
-        t.printStackTrace();
-        swipeRefreshLayout.setRefreshing(false);
-    }
-
-    @Override
-    public void onReviewesItemClick(int position) {
+    public void onReviewesItemClick(Result item) {
         Intent startReviewPage = new Intent(getContext(), ReviewPage.class)
-                .putExtra("URL", results.get(position).getLink().getUrl())
-                .putExtra("ARTICLE_TITLE", results.get(position).getDisplayTitle());
-        getContext().startActivity(startReviewPage);
+                .putExtra("URL", item.getLink().getUrl())
+                .putExtra("ARTICLE_TITLE", item.getDisplayTitle());
+        startActivity(startReviewPage);
     }
 }

@@ -16,7 +16,7 @@ public interface MovieReviewsApi {
                                          @Query("order") String order);
 
     @GET("/svc/movies/v2/reviews/search.json")
-    Call<PostModelReviews> getCriticPost(@Query("api-key") String apiKey, @Query("reviewer") String reviewer);
+    Call<PostModelReviews> getCriticPost(@Query("api-key") String apiKey, @Query("reviewer") String reviewer, @Query("offset") int offset);
 
     @GET("/svc/movies/v2/critics/{name-critic}.json")
     Call<PostModelCritics> getCritic(@Path("name-critic") String name, @Query("api-key") String apiKey);
