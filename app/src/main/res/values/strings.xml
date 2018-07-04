@@ -28,4 +28,6 @@
     <string name="no_element">There is no such element</string>
 
     <string name="order_reviewes">by-publication-date</string>
+
+    <string name="no_value">No value</string>
 </resources>

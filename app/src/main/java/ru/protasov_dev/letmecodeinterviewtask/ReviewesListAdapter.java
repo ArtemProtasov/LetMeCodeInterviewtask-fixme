@@ -8,19 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.Result;
 
-public class ReviewesListAdapter extends BaseListAdapter<Result,
-        ReviewesListAdapter.ReviewesViewHolder> {
+public class ReviewesListAdapter extends RecyclerView.Adapter<ReviewesListAdapter.ReviewesViewHolder> {
+
+    private List<Result> items;
 
     interface ReviewesListener {
         void onReviewesItemClick(int position);
@@ -29,7 +27,8 @@ public class ReviewesListAdapter extends BaseListAdapter<Result,
     private ReviewesListener listener;
 
     public ReviewesListAdapter(List<Result> items, ReviewesListener reviewesListener) {
-        super(items);
+        super();
+        this.items = items;
         listener = reviewesListener;
     }
 
@@ -42,8 +41,6 @@ public class ReviewesListAdapter extends BaseListAdapter<Result,
 
     @Override
     public void onBindViewHolder(final ReviewesViewHolder holder, int position) {
-        super.onBindViewHolder(holder, position);
-
         Context context = holder.itemView.getContext();
         Result item = items.get(position);
 
@@ -61,10 +58,29 @@ public class ReviewesListAdapter extends BaseListAdapter<Result,
                     .apply(requestOptions)
                     .into(holder.imageViewPresentation);
 
-            holder.textViewTitle.setText(item.getDisplayTitle());
-            holder.textViewSummaryShort.setText(item.getSummaryShort());
-            holder.textViewByline.setText(item.getByline());
-            holder.textViewDate.setText(item.getPublicationDate());
+            if (item.getDisplayTitle() != null) {
+                holder.textViewTitle.setText(item.getDisplayTitle());
+            } else {
+                holder.textViewTitle.setText(R.string.no_value);
+            }
+
+            if (item.getSummaryShort() != null) {
+                holder.textViewSummaryShort.setText(item.getSummaryShort());
+            } else {
+                holder.textViewSummaryShort.setText(R.string.no_value);
+            }
+
+            if (item.getByline() != null) {
+                holder.textViewByline.setText(item.getByline());
+            } else {
+                holder.textViewByline.setText(R.string.no_value);
+            }
+
+            if (item.getPublicationDate() != null) {
+                holder.textViewDate.setText(item.getPublicationDate());
+            } else {
+                holder.textViewDate.setText(R.string.no_value);
+            }
         }
 
         holder.cardViewReview.setOnClickListener(new View.OnClickListener() {
@@ -77,28 +93,52 @@ public class ReviewesListAdapter extends BaseListAdapter<Result,
         });
     }
 
+    @Override
+    public int getItemCount() {
+        if (items == null) {
+            return 0;
+        }
+        return items.size();
+    }
+
+    public void clearItems() {
+        if(this.items != null) {
+            this.items.clear();
+            notifyDataSetChanged();
+        }
+    }
+
+    public void updateItems(List<Result> items) {
+        if (this.items != null) {
+            this.items.clear();
+            this.items.addAll(items);
+            notifyDataSetChanged();
+        } else {
+            setItems(items);
+        }
+    }
+
+    public void setItems(List<Result> items) {
+        this.items = items;
+        notifyDataSetChanged();
+    }
+
     static class ReviewesViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.img_reviewes)
         ImageView imageViewPresentation;
-
-        @BindView(R.id.txt_title_reviewes)
         TextView textViewTitle;
-
-        @BindView(R.id.txt_summary_short_reviewes)
         TextView textViewSummaryShort;
-
-        @BindView(R.id.txt_byline)
         TextView textViewByline;
-
-        @BindView(R.id.txt_date_reviewes)
         TextView textViewDate;
-
-        @BindView(R.id.cardView)
         CardView cardViewReview;
 
         ReviewesViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            imageViewPresentation = itemView.findViewById(R.id.img_reviewes);
+            textViewTitle = itemView.findViewById(R.id.txt_title_reviewes);
+            textViewSummaryShort = itemView.findViewById(R.id.txt_summary_short_reviewes);
+            textViewByline = itemView.findViewById(R.id.txt_byline);
+            textViewDate = itemView.findViewById(R.id.txt_date_reviewes);
+            cardViewReview = itemView.findViewById(R.id.cardView);
         }
     }
 }

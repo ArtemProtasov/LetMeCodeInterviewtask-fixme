@@ -90,9 +90,6 @@ public class ReviewesFragment extends Fragment implements View.OnClickListener, 
                 etKeywords.setText(null);
                 getData(null, null, true, 0);
                 break;
-            default:
-                Toast.makeText(getContext(), R.string.no_element, Toast.LENGTH_SHORT).show();
-                break;
         }
     }
 
