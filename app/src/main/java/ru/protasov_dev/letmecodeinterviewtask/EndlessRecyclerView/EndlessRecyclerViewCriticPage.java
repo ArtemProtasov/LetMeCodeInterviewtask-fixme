@@ -1,4 +1,4 @@
-package ru.protasov_dev.letmecodeinterviewtask;
+package ru.protasov_dev.letmecodeinterviewtask.EndlessRecyclerView;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -6,6 +6,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
+
+import ru.protasov_dev.letmecodeinterviewtask.R;
 
 public class EndlessRecyclerViewCriticPage extends RecyclerView {
     private LinearLayoutManager layoutManager;
@@ -40,7 +42,7 @@ public class EndlessRecyclerViewCriticPage extends RecyclerView {
             int visibleItemCount = layoutManager.getChildCount();
             int totalItemCount = layoutManager.getItemCount();
             int pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
-            if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+            if ((visibleItemCount + pastVisiblesItems + 2) >= totalItemCount) {
                 if (onLoadMoreListener != null) {
                     //Если нужны новые данные, то делаем колбек onLoadMore
                     onLoadMoreListener.onLoadMore();

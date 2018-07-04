@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,11 +17,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import ru.protasov_dev.letmecodeinterviewtask.App;
-import ru.protasov_dev.letmecodeinterviewtask.EndlessRecyclerViewCriticPage;
+import ru.protasov_dev.letmecodeinterviewtask.EndlessRecyclerView.EndlessRecyclerViewCriticPage;
 import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.PostModelReviews;
 import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.Result;
 import ru.protasov_dev.letmecodeinterviewtask.R;
-import ru.protasov_dev.letmecodeinterviewtask.ReviewesListAdapter;
+import ru.protasov_dev.letmecodeinterviewtask.Adapters.ReviewesListAdapter;
 
 public class CriticPage extends AppCompatActivity implements EndlessRecyclerViewCriticPage.OnLoadMoreListener, ReviewesListAdapter.ReviewesListener {
     private SwipeRefreshLayout refreshLayout;
@@ -31,6 +30,7 @@ public class CriticPage extends AppCompatActivity implements EndlessRecyclerView
     private int currentPage = 0;
     private ReviewesListAdapter reviewesListAdapter;
     private EndlessRecyclerViewCriticPage recyclerView;
+    private String url_photo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,11 @@ public class CriticPage extends AppCompatActivity implements EndlessRecyclerView
         name = getData.getStringExtra("NAME");
         String status = getData.getStringExtra("STATUS");
         String bio = getData.getStringExtra("BIO");
-        String url_photo = getData.getStringExtra("URL_IMG");
+        try {
+            url_photo = getData.getStringExtra("URL_IMG");
+        } catch (NullPointerException e){
+            url_photo = null;
+        }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

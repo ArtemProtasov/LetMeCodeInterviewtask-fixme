@@ -1,4 +1,4 @@
-package ru.protasov_dev.letmecodeinterviewtask;
+package ru.protasov_dev.letmecodeinterviewtask.Fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -18,8 +18,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import ru.protasov_dev.letmecodeinterviewtask.Activity.ReviewPage;
+import ru.protasov_dev.letmecodeinterviewtask.App;
+import ru.protasov_dev.letmecodeinterviewtask.EndlessRecyclerView.EndlessRecyclerViewReviews;
 import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.PostModelReviews;
 import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.Result;
+import ru.protasov_dev.letmecodeinterviewtask.R;
+import ru.protasov_dev.letmecodeinterviewtask.Adapters.ReviewesListAdapter;
 
 import static android.R.color.holo_blue_bright;
 import static android.R.color.holo_green_light;

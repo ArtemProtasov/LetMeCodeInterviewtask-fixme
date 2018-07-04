@@ -1,4 +1,4 @@
-package ru.protasov_dev.letmecodeinterviewtask;
+package ru.protasov_dev.letmecodeinterviewtask.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;
@@ -15,6 +15,7 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.Result;
+import ru.protasov_dev.letmecodeinterviewtask.R;
 
 public class ReviewesListAdapter extends RecyclerView.Adapter<ReviewesListAdapter.ReviewesViewHolder> {
 

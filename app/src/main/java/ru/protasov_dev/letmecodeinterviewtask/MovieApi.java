@@ -7,7 +7,7 @@ import retrofit2.http.Query;
 import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelCritics.PostModelCritics;
 import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.PostModelReviews;
 
-public interface MovieReviewsApi {
+public interface MovieApi {
     @GET("/svc/movies/v2/reviews/search.json")
     Call<PostModelReviews> getAllReviews(@Query("api-key") String apiKey,
                                          @Query("query") String query,

@@ -1,4 +1,4 @@
-package ru.protasov_dev.letmecodeinterviewtask;
+package ru.protasov_dev.letmecodeinterviewtask.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;
@@ -15,11 +15,13 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.List;
 
 import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelCritics.Result;
+import ru.protasov_dev.letmecodeinterviewtask.R;
 
 
 public class CriticsListAdapter extends RecyclerView.Adapter<CriticsListAdapter.CriticsViewHolder> {
     private List<Result> items = null;
     private CriticsListener listener;
+    private String URL = null;
 
     public interface CriticsListener{
         void onCriticsItemClick(Result item);
@@ -72,6 +74,12 @@ public class CriticsListAdapter extends RecyclerView.Adapter<CriticsListAdapter.
                 holder.textViewStatus.setText(item.getStatus());
             } else {
                 holder.textViewStatus.setText(R.string.no_value);
+            }
+
+            if(item.getMultimedia() != null) {
+                this.URL = item.getMultimedia().getResource().getSrc();
+            } else {
+                this.URL = null;
             }
         }
 
