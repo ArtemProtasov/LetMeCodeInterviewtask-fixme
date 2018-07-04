@@ -28,7 +28,6 @@ public class EndlessRecyclerView extends RecyclerView {
 
     private void init() {
         RecyclerView recyclerView = findViewById(R.id.recycler_reviews);
-
         //Использовать линейный менеджер компановки
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
@@ -42,12 +41,11 @@ public class EndlessRecyclerView extends RecyclerView {
             int totalItemCount = layoutManager.getItemCount();
             int pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
             if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                Log.d("EndlessRecyclerView", "Call load more");
                 if (onLoadMoreListener != null) {
                     //Если нужны новые данные, то делаем колбек onLoadMore
                     onLoadMoreListener.onLoadMore();
                 }
-            }
+             }
         }
     }
 

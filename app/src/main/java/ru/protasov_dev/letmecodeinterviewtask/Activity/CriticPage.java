@@ -21,13 +21,11 @@ import ru.protasov_dev.letmecodeinterviewtask.EndlessRecyclerView;
 import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.PostModelReviews;
 import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.Result;
 import ru.protasov_dev.letmecodeinterviewtask.R;
-import ru.protasov_dev.letmecodeinterviewtask.RecyclerViewAdapter;
 
 public class CriticPage extends AppCompatActivity implements View.OnClickListener, EndlessRecyclerView.OnLoadMoreListener, Callback<PostModelReviews> {// implements SwipeRefreshLayout.OnRefreshListener, ParseTaskReviewes.MyCustomCallBack{
     private SwipeRefreshLayout refreshLayout;
 
     private String name;
-    private RecyclerViewAdapter recyclerViewAdapter;
     private int currentPage = 0;
 
 
@@ -62,11 +60,6 @@ public class CriticPage extends AppCompatActivity implements View.OnClickListene
         tvNameCritic.setText(name);
         tvStatusCritic.setText(status);
 
-        EndlessRecyclerView recyclerView = findViewById(R.id.recycler_critics_page);
-        recyclerViewAdapter = new RecyclerViewAdapter();
-        recyclerView.setAdapter(recyclerViewAdapter);
-        recyclerView.setOnLoadMoreListener(this);
-
         Glide.with(this)
                 .load(url_photo)
                 .apply(new RequestOptions().placeholder(R.drawable.avatar).centerCrop())
@@ -99,7 +92,6 @@ public class CriticPage extends AppCompatActivity implements View.OnClickListene
     public void onResponse(Call<PostModelReviews> call, Response<PostModelReviews> response) {
         PostModelReviews postModelReviews = response.body();
         for (Result result : postModelReviews.getResults()) {
-            recyclerViewAdapter.addItem(result);
         }
     }
 
@@ -116,7 +108,6 @@ public class CriticPage extends AppCompatActivity implements View.OnClickListene
 
     private void getData(boolean clear, int offset) {
         if (clear) {
-            recyclerViewAdapter.clearAllItem();
         }
         App.getApi().getCriticPost(getString(R.string.api_key_nyt), name);
     }
