@@ -26,7 +26,6 @@
                 android:paddingTop="10dp"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@mipmap/ic_launcher" />
 
             <TextView

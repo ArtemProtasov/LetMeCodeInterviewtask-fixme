@@ -73,8 +73,8 @@ public class ReviewesFragment extends Fragment implements EndlessRecyclerViewRev
             }
         });
 
-        ImageButton editTextClearKeyword = view.findViewById(R.id.clear_keywords);
-        editTextClearKeyword.setOnClickListener(new View.OnClickListener() {
+        ImageButton imageButtonClearKeyword = view.findViewById(R.id.clear_keywords);
+        imageButtonClearKeyword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 etKeywords.setText(null);

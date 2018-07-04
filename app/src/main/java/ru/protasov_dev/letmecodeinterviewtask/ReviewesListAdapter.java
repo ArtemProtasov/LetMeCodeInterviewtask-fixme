@@ -54,7 +54,8 @@ public class ReviewesListAdapter extends RecyclerView.Adapter<ReviewesListAdapte
                 URL = item.getMultimedia().getSrc();
             }
 
-            RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.image).centerCrop();
+            RequestOptions requestOptions
+                    = new RequestOptions().placeholder(R.drawable.image).centerCrop();
 
             Glide.with(context)
                     .load(URL)

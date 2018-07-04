@@ -56,6 +56,9 @@ public class CriticsFragmentV2 extends Fragment implements View.OnClickListener 
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if (keyEvent != null && keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
                     nameCritic = editTextNameCritics.getText().toString();
+                    if(nameCritic.equals("")){
+                        nameCritic = null;
+                    }
                     getCritics();
                     return true;
                 }
