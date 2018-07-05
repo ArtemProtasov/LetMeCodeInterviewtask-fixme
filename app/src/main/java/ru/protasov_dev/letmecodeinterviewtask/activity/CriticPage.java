@@ -133,7 +133,6 @@ public class CriticPage extends AppCompatActivity implements EndlessRecyclerView
         });
     }
 
-
     @Override
     public void onReviewesItemClick(Result item) {
         Intent startReviewPage = new Intent(this, ReviewPage.class)

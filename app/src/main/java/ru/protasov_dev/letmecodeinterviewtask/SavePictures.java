@@ -3,14 +3,17 @@ package ru.protasov_dev.letmecodeinterviewtask;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -26,6 +29,7 @@ public class SavePictures {
     private Activity activity;
     private String imageName;
     private ImageView imageView;
+    private File folderToSave;
 
     public SavePictures(Context context,
                         View view,
@@ -43,11 +47,12 @@ public class SavePictures {
     private void save(){
         if(checkPermission()){
             OutputStream outputStream = null;
-            long currentTime = Calendar.getInstance().getTimeInMillis();
-            File folderToSave = Environment.getExternalStorageDirectory();
+            folderToSave = Environment
+                    .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES + "/LMC/");
 
             try{
-                File file = new File(folderToSave, imageName + currentTime + ".jpg");
+                folderToSave.mkdir();
+                File file = new File(folderToSave, imageName + ".jpg");
                 outputStream = new FileOutputStream(file);
                 try {
                     Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
@@ -56,8 +61,9 @@ public class SavePictures {
                     outputStream.flush();
                     outputStream.close();
 
-                    MediaStore.Images.Media.insertImage(context.getContentResolver(),
-                            file.getAbsolutePath(), file.getName(), file.getName());
+                    galleryAddPic();
+//                    MediaStore.Images.Media.insertImage(context.getContentResolver(),
+//                            file.getAbsolutePath(), imageName + ".jpg", imageName);
 
                     Snackbar.make(view, "Image saved!", Snackbar.LENGTH_SHORT).show();
                 } catch (Exception e) {
@@ -82,5 +88,12 @@ public class SavePictures {
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
             return true;
         }
+    }
+
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        Uri contentUri = Uri.fromFile(folderToSave);
+        mediaScanIntent.setData(contentUri);
+        context.sendBroadcast(mediaScanIntent);
     }
 }
