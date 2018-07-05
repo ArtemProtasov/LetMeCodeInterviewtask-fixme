@@ -102,7 +102,7 @@
         android:id="@+id/swipe_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <ru.protasov_dev.letmecodeinterviewtask.EndlessRecyclerView.EndlessRecyclerViewCriticPage
+        <ru.protasov_dev.letmecodeinterviewtask.endlessrecyclereiew.EndlessRecyclerViewCriticPage
             android:id="@+id/recycler_critics_page"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

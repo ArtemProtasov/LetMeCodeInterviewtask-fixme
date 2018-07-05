@@ -1,6 +1,7 @@
-package ru.protasov_dev.letmecodeinterviewtask.Activity;
+package ru.protasov_dev.letmecodeinterviewtask.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -17,11 +18,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import ru.protasov_dev.letmecodeinterviewtask.App;
-import ru.protasov_dev.letmecodeinterviewtask.EndlessRecyclerView.EndlessRecyclerViewCriticPage;
-import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.PostModelReviews;
-import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.Result;
+import ru.protasov_dev.letmecodeinterviewtask.endlessrecyclereiew.EndlessRecyclerViewCriticPage;
+import ru.protasov_dev.letmecodeinterviewtask.parsetaskmanagers.PostModelReviews.PostModelReviews;
+import ru.protasov_dev.letmecodeinterviewtask.parsetaskmanagers.PostModelReviews.Result;
 import ru.protasov_dev.letmecodeinterviewtask.R;
-import ru.protasov_dev.letmecodeinterviewtask.Adapters.ReviewesListAdapter;
+import ru.protasov_dev.letmecodeinterviewtask.adapters.ReviewesListAdapter;
 
 public class CriticPage extends AppCompatActivity implements EndlessRecyclerViewCriticPage.OnLoadMoreListener, ReviewesListAdapter.ReviewesListener {
     private SwipeRefreshLayout refreshLayout;
@@ -126,4 +127,10 @@ public class CriticPage extends AppCompatActivity implements EndlessRecyclerView
                 .putExtra("ARTICLE_TITLE", item.getDisplayTitle());
         startActivity(startReviewPage);
     }
+
+    @Override
+    public void onReviewesLongImageClick(ImageView imageView, String title) {
+
+    }
+
 }

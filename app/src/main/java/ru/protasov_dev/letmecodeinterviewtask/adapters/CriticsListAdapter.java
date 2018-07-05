@@ -1,4 +1,4 @@
-package ru.protasov_dev.letmecodeinterviewtask.Adapters;
+package ru.protasov_dev.letmecodeinterviewtask.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;
@@ -14,7 +14,7 @@ import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
-import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelCritics.Result;
+import ru.protasov_dev.letmecodeinterviewtask.parsetaskmanagers.PostModelCritics.Result;
 import ru.protasov_dev.letmecodeinterviewtask.R;
 
 
@@ -25,6 +25,7 @@ public class CriticsListAdapter extends RecyclerView.Adapter<CriticsListAdapter.
 
     public interface CriticsListener{
         void onCriticsItemClick(Result item);
+        void onCriticsLongImageClick(ImageView imageView, String title);
     }
 
     public CriticsListAdapter(){
@@ -45,7 +46,7 @@ public class CriticsListAdapter extends RecyclerView.Adapter<CriticsListAdapter.
     }
 
     @Override
-    public void onBindViewHolder(CriticsViewHolder holder, int position) {
+    public void onBindViewHolder(final CriticsViewHolder holder, int position) {
         Context context = holder.itemView.getContext();
         final Result item = items.get(position);
 
@@ -89,6 +90,17 @@ public class CriticsListAdapter extends RecyclerView.Adapter<CriticsListAdapter.
                 if(listener != null) {
                     listener.onCriticsItemClick(item);
                 }
+            }
+        });
+
+        holder.imageViewPhotoOfCritic.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if(listener != null){
+                    listener.onCriticsLongImageClick(holder.imageViewPhotoOfCritic, holder.textViewDisplayName.getText().toString());
+                    return true;
+                }
+                return false;
             }
         });
     }

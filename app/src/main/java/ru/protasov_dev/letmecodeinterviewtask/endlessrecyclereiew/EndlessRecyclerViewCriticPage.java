@@ -1,35 +1,34 @@
-package ru.protasov_dev.letmecodeinterviewtask.EndlessRecyclerView;
+package ru.protasov_dev.letmecodeinterviewtask.endlessrecyclereiew;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import ru.protasov_dev.letmecodeinterviewtask.R;
 
-public class EndlessRecyclerViewReviews extends RecyclerView {
+public class EndlessRecyclerViewCriticPage extends RecyclerView {
     private LinearLayoutManager layoutManager;
     private OnLoadMoreListener onLoadMoreListener;
 
-    public EndlessRecyclerViewReviews(Context context) {
+    public EndlessRecyclerViewCriticPage(Context context) {
         super(context);
         init();
     }
 
-    public EndlessRecyclerViewReviews(Context context, @Nullable AttributeSet attrs) {
+    public EndlessRecyclerViewCriticPage(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public EndlessRecyclerViewReviews(Context context, @Nullable AttributeSet attrs, int defStyle) {
+    public EndlessRecyclerViewCriticPage(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
     }
 
     private void init() {
-        RecyclerView recyclerView = findViewById(R.id.recycler_reviews);
+        RecyclerView recyclerView = findViewById(R.id.recycler_critics_page);
         //Использовать линейный менеджер компановки
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
@@ -47,7 +46,7 @@ public class EndlessRecyclerViewReviews extends RecyclerView {
                     //Если нужны новые данные, то делаем колбек onLoadMore
                     onLoadMoreListener.onLoadMore();
                 }
-             }
+            }
         }
     }
 

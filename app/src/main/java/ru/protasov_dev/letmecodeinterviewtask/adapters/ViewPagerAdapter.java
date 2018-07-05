@@ -1,4 +1,4 @@
-package ru.protasov_dev.letmecodeinterviewtask.Adapters;
+package ru.protasov_dev.letmecodeinterviewtask.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

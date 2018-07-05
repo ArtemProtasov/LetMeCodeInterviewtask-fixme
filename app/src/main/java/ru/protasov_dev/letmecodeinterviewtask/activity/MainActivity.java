@@ -1,4 +1,4 @@
-package ru.protasov_dev.letmecodeinterviewtask.Activity;
+package ru.protasov_dev.letmecodeinterviewtask.activity;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -11,10 +11,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import ru.protasov_dev.letmecodeinterviewtask.Adapters.ViewPagerAdapter;
-import ru.protasov_dev.letmecodeinterviewtask.Fragments.CriticsFragment;
+import ru.protasov_dev.letmecodeinterviewtask.adapters.ViewPagerAdapter;
+import ru.protasov_dev.letmecodeinterviewtask.fragments.CriticsFragment;
 import ru.protasov_dev.letmecodeinterviewtask.R;
-import ru.protasov_dev.letmecodeinterviewtask.Fragments.ReviewesFragment;
+import ru.protasov_dev.letmecodeinterviewtask.fragments.ReviewesFragment;
 
 public class MainActivity extends AppCompatActivity {
 

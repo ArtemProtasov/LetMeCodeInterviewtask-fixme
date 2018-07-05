@@ -4,8 +4,8 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelCritics.PostModelCritics;
-import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.PostModelReviews;
+import ru.protasov_dev.letmecodeinterviewtask.parsetaskmanagers.PostModelCritics.PostModelCritics;
+import ru.protasov_dev.letmecodeinterviewtask.parsetaskmanagers.PostModelReviews.PostModelReviews;
 
 public interface MovieApi {
     @GET("/svc/movies/v2/reviews/search.json")

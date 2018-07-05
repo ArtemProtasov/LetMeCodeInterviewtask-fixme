@@ -26,7 +26,9 @@
                 android:paddingTop="10dp"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@mipmap/ic_launcher"
+                android:clickable="true"
+                android:focusable="true" />
 
             <TextView
                 android:id="@+id/critic_name"

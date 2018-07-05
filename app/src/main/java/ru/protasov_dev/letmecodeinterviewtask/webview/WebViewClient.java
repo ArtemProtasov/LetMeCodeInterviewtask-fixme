@@ -1,4 +1,4 @@
-package ru.protasov_dev.letmecodeinterviewtask.WebView;
+package ru.protasov_dev.letmecodeinterviewtask.webview;
 
 import android.annotation.TargetApi;
 import android.os.Build;

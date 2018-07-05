@@ -1,4 +1,4 @@
-package ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelCritics;
+package ru.protasov_dev.letmecodeinterviewtask.parsetaskmanagers.PostModelCritics;
 
 
 import com.google.gson.annotations.Expose;

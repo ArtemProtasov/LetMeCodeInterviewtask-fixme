@@ -1,4 +1,4 @@
-package ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews;
+package ru.protasov_dev.letmecodeinterviewtask.parsetaskmanagers.PostModelReviews;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

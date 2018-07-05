@@ -1,4 +1,4 @@
-package ru.protasov_dev.letmecodeinterviewtask.Activity;
+package ru.protasov_dev.letmecodeinterviewtask.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,7 +11,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
 import ru.protasov_dev.letmecodeinterviewtask.R;
-import ru.protasov_dev.letmecodeinterviewtask.WebView.WebViewClient;
+import ru.protasov_dev.letmecodeinterviewtask.webview.WebViewClient;
 
 public class ReviewPage extends AppCompatActivity {
     private WebView webView;

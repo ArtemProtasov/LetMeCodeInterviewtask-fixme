@@ -1,6 +1,8 @@
-package ru.protasov_dev.letmecodeinterviewtask.Adapters;
+package ru.protasov_dev.letmecodeinterviewtask.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,15 +16,17 @@ import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
-import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelReviews.Result;
+import ru.protasov_dev.letmecodeinterviewtask.parsetaskmanagers.PostModelReviews.Result;
 import ru.protasov_dev.letmecodeinterviewtask.R;
 
 public class ReviewesListAdapter extends RecyclerView.Adapter<ReviewesListAdapter.ReviewesViewHolder> {
 
     private List<Result> items = null;
+    private Bitmap bitmap;
 
     public interface ReviewesListener {
         void onReviewesItemClick(Result item);
+        void onReviewesLongImageClick(ImageView imageView, String title);
     }
 
     private ReviewesListener listener;
@@ -63,6 +67,9 @@ public class ReviewesListAdapter extends RecyclerView.Adapter<ReviewesListAdapte
                     .apply(requestOptions)
                     .into(holder.imageViewPresentation);
 
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) holder.imageViewPresentation.getDrawable();
+            bitmap = bitmapDrawable.getBitmap();
+
             if (item.getDisplayTitle() != null) {
                 holder.textViewTitle.setText(item.getDisplayTitle());
             } else {
@@ -94,6 +101,17 @@ public class ReviewesListAdapter extends RecyclerView.Adapter<ReviewesListAdapte
                 if (listener != null) {
                     listener.onReviewesItemClick(item);
                 }
+            }
+        });
+
+        holder.imageViewPresentation.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if(listener != null){
+                    listener.onReviewesLongImageClick(holder.imageViewPresentation, holder.textViewTitle.getText().toString());
+                    return true;
+                }
+                return false;
             }
         });
     }

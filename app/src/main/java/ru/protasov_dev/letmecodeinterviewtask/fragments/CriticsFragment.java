@@ -1,9 +1,18 @@
-package ru.protasov_dev.letmecodeinterviewtask.Fragments;
+package ru.protasov_dev.letmecodeinterviewtask.fragments;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,17 +22,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.Calendar;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import ru.protasov_dev.letmecodeinterviewtask.Activity.CriticPage;
+import ru.protasov_dev.letmecodeinterviewtask.activity.CriticPage;
 import ru.protasov_dev.letmecodeinterviewtask.App;
-import ru.protasov_dev.letmecodeinterviewtask.Adapters.CriticsListAdapter;
-import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelCritics.PostModelCritics;
-import ru.protasov_dev.letmecodeinterviewtask.ParseTaskManagers.PostModelCritics.Result;
+import ru.protasov_dev.letmecodeinterviewtask.adapters.CriticsListAdapter;
+import ru.protasov_dev.letmecodeinterviewtask.parsetaskmanagers.PostModelCritics.PostModelCritics;
+import ru.protasov_dev.letmecodeinterviewtask.parsetaskmanagers.PostModelCritics.Result;
 import ru.protasov_dev.letmecodeinterviewtask.R;
 
 import static android.R.color.holo_blue_bright;
@@ -129,5 +144,49 @@ public class CriticsFragment extends Fragment implements CriticsListAdapter.Crit
                 .putExtra("BIO", item.getBio())
                 .putExtra("URL_IMG", URL);
         getContext().startActivity(startCriticPage);
+    }
+
+    @Override
+    public void onCriticsLongImageClick(ImageView imageView, String title) {
+        File folderToSave = Environment.getExternalStorageDirectory();
+        if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+            Snackbar.make(getView(), "Saving...", Snackbar.LENGTH_SHORT).show();
+            if(SavePicture(imageView, title, folderToSave)) {
+                Snackbar.make(getView(), "Image saved!", Snackbar.LENGTH_SHORT).show();
+            } else {
+                Snackbar.make(getView(), "An unexpected error occurred...", Snackbar.LENGTH_SHORT).show();
+            }
+        } else {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+            Snackbar.make(getView(), getString(R.string.try_again), Snackbar.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private boolean SavePicture(ImageView imageView, String title, File folderToSave){
+        OutputStream outputStream = null;
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+
+        try{
+            File file = new File(folderToSave, title + ".jpg");
+            outputStream = new FileOutputStream(file);
+            try {
+                Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+
+                outputStream.flush();
+                outputStream.close();
+
+                MediaStore.Images.Media.insertImage(getContext().getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
     }
 }

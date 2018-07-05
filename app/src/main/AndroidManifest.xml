@@ -18,7 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.MainActivity"
+        <activity android:name=".activity.MainActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -29,11 +29,11 @@
         </activity>
 
         <activity
-            android:name=".Activity.CriticPage"
+            android:name=".activity.CriticPage"
             android:label="@string/name_and_surname">
         </activity>
         <activity
-            android:name=".Activity.ReviewPage"
+            android:name=".activity.ReviewPage"
             android:label="@string/name_and_surname">
         </activity>
     </application>
