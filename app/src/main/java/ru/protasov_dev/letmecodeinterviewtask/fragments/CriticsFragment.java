@@ -34,6 +34,7 @@ import java.util.Calendar;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import ru.protasov_dev.letmecodeinterviewtask.SavePictures;
 import ru.protasov_dev.letmecodeinterviewtask.activity.CriticPage;
 import ru.protasov_dev.letmecodeinterviewtask.App;
 import ru.protasov_dev.letmecodeinterviewtask.adapters.CriticsListAdapter;
@@ -55,7 +56,9 @@ public class CriticsFragment extends Fragment implements CriticsListAdapter.Crit
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.critics_fragment, container, false);
     }
 
@@ -115,7 +118,8 @@ public class CriticsFragment extends Fragment implements CriticsListAdapter.Crit
             nameCritics = "all";
         }
 
-        App.getApi().getCritic(nameCritics, getString(R.string.api_key_nyt)).enqueue(new Callback<PostModelCritics>() {
+        App.getApi().getCritic(nameCritics, getString(R.string.api_key_nyt))
+                .enqueue(new Callback<PostModelCritics>() {
             @Override
             public void onResponse(Call<PostModelCritics> call, Response<PostModelCritics> response) {
                 if(response.body() != null) {
@@ -148,45 +152,6 @@ public class CriticsFragment extends Fragment implements CriticsListAdapter.Crit
 
     @Override
     public void onCriticsLongImageClick(ImageView imageView, String title) {
-        File folderToSave = Environment.getExternalStorageDirectory();
-        if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
-            Snackbar.make(getView(), "Saving...", Snackbar.LENGTH_SHORT).show();
-            if(SavePicture(imageView, title, folderToSave)) {
-                Snackbar.make(getView(), "Image saved!", Snackbar.LENGTH_SHORT).show();
-            } else {
-                Snackbar.make(getView(), "An unexpected error occurred...", Snackbar.LENGTH_SHORT).show();
-            }
-        } else {
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-            Snackbar.make(getView(), getString(R.string.try_again), Snackbar.LENGTH_SHORT).show();
-        }
-
-    }
-
-    private boolean SavePicture(ImageView imageView, String title, File folderToSave){
-        OutputStream outputStream = null;
-        long currentTime = Calendar.getInstance().getTimeInMillis();
-
-        try{
-            File file = new File(folderToSave, title + ".jpg");
-            outputStream = new FileOutputStream(file);
-            try {
-                Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-
-                outputStream.flush();
-                outputStream.close();
-
-                MediaStore.Images.Media.insertImage(getContext().getContentResolver(), file.getAbsolutePath(), file.getName(), file.getName());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-
-        return true;
+        new SavePictures(getContext(), getView(), getActivity(), title, imageView);
     }
 }

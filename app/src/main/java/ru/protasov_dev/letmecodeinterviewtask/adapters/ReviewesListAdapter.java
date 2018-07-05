@@ -108,7 +108,8 @@ public class ReviewesListAdapter extends RecyclerView.Adapter<ReviewesListAdapte
             @Override
             public boolean onLongClick(View view) {
                 if(listener != null){
-                    listener.onReviewesLongImageClick(holder.imageViewPresentation, holder.textViewTitle.getText().toString());
+                    listener.onReviewesLongImageClick(holder.imageViewPresentation,
+                            holder.textViewTitle.getText().toString());
                     return true;
                 }
                 return false;

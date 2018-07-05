@@ -97,7 +97,8 @@ public class CriticsListAdapter extends RecyclerView.Adapter<CriticsListAdapter.
             @Override
             public boolean onLongClick(View view) {
                 if(listener != null){
-                    listener.onCriticsLongImageClick(holder.imageViewPhotoOfCritic, holder.textViewDisplayName.getText().toString());
+                    listener.onCriticsLongImageClick(holder.imageViewPhotoOfCritic,
+                            holder.textViewDisplayName.getText().toString());
                     return true;
                 }
                 return false;
