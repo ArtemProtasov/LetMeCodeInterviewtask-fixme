@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".App"
+        android:name="ru.protasovdev.letmecodeinterviewtask.App"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,7 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.MainActivity"
+        <activity android:name="ru.protasovdev.letmecodeinterviewtask.activity.MainActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -29,11 +29,11 @@
         </activity>
 
         <activity
-            android:name=".activity.CriticPage"
+            android:name="ru.protasovdev.letmecodeinterviewtask.activity.CriticPage"
             android:label="@string/name_and_surname">
         </activity>
         <activity
-            android:name=".activity.ReviewPage"
+            android:name="ru.protasovdev.letmecodeinterviewtask.activity.ReviewPage"
             android:label="@string/name_and_surname">
         </activity>
     </application>
