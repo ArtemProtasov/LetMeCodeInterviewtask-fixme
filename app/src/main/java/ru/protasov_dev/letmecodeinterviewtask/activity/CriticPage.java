@@ -8,10 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -24,16 +21,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.Calendar;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import ru.protasov_dev.letmecodeinterviewtask.App;
-import ru.protasov_dev.letmecodeinterviewtask.SavePictures;
+import ru.protasov_dev.letmecodeinterviewtask.Utils;
 import ru.protasov_dev.letmecodeinterviewtask.endlessrecyclereiew.EndlessRecyclerViewCriticPage;
 import ru.protasov_dev.letmecodeinterviewtask.parsetaskmanagers.PostModelReviews.PostModelReviews;
 import ru.protasov_dev.letmecodeinterviewtask.parsetaskmanagers.PostModelReviews.Result;
@@ -143,13 +135,15 @@ public class CriticPage extends AppCompatActivity implements EndlessRecyclerView
         startActivity(startReviewPage);
     }
 
-    ImageView imageView;
-    String title;
+    private ImageView imageView;
+    private String title;
+    private Bitmap bitmap;
 
     @Override
     public void onReviewesLongImageClick(final ImageView imageView, final String title) {
         this.imageView = imageView;
         this.title = title;
+        this.bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
         new AlertDialog.Builder(this)
                 .setTitle(R.string.save_image)
                 .setMessage(R.string.save_or_cancel)
@@ -174,7 +168,17 @@ public class CriticPage extends AppCompatActivity implements EndlessRecyclerView
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
-            new SavePictures(this, imageView, title, imageView);
+            try {
+                Utils.savePicture(getApplicationContext(), title, bitmap);
+                Snackbar.make(imageView,
+                        getString(R.string.image_saved),
+                        Snackbar.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Snackbar.make(imageView,
+                        getString(R.string.image_not_saved),
+                        Snackbar.LENGTH_SHORT).show();
+            }
             return true;
         } else {
             return false;
@@ -197,7 +201,9 @@ public class CriticPage extends AppCompatActivity implements EndlessRecyclerView
                 .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Snackbar.make(imageView, R.string.image_not_saved, Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(imageView,
+                                R.string.image_not_saved,
+                                Snackbar.LENGTH_SHORT).show();
                     }
                 })
                 .show();
@@ -210,13 +216,27 @@ public class CriticPage extends AppCompatActivity implements EndlessRecyclerView
             case 0: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    new SavePictures(this, imageView, title, imageView);
+                    try {
+                        Utils.savePicture(getApplicationContext(), title, bitmap);
+                        Snackbar.make(imageView,
+                                getString(R.string.image_saved),
+                                Snackbar.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Snackbar.make(imageView,
+                                getString(R.string.image_not_saved),
+                                Snackbar.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Snackbar.make(imageView, R.string.no_permission, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(imageView,
+                            R.string.no_permission,
+                            Snackbar.LENGTH_SHORT).show();
                 }
                 return;
             }
         }
-        Snackbar.make(imageView, R.string.no_permission, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(imageView,
+                R.string.no_permission,
+                Snackbar.LENGTH_SHORT).show();
     }
 }

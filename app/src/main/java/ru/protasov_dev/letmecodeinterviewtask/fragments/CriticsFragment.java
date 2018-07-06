@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -28,7 +30,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import ru.protasov_dev.letmecodeinterviewtask.App;
 import ru.protasov_dev.letmecodeinterviewtask.R;
-import ru.protasov_dev.letmecodeinterviewtask.SavePictures;
+import ru.protasov_dev.letmecodeinterviewtask.Utils;
 import ru.protasov_dev.letmecodeinterviewtask.activity.CriticPage;
 import ru.protasov_dev.letmecodeinterviewtask.adapters.CriticsListAdapter;
 import ru.protasov_dev.letmecodeinterviewtask.parsetaskmanagers.PostModelCritics.PostModelCritics;
@@ -119,10 +121,11 @@ public class CriticsFragment extends Fragment implements CriticsListAdapter.Crit
                         }
                         swipeRefreshLayout.setRefreshing(false);
                     }
-
                     @Override
                     public void onFailure(Call<PostModelCritics> call, Throwable t) {
-                        Toast.makeText(getContext(), R.string.no_internet, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(),
+                                R.string.no_internet,
+                                Toast.LENGTH_SHORT).show();
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 });
@@ -142,13 +145,15 @@ public class CriticsFragment extends Fragment implements CriticsListAdapter.Crit
         getContext().startActivity(startCriticPage);
     }
 
-    ImageView imageView;
-    String title;
+    private ImageView imageView;
+    private String title;
+    private Bitmap bitmap;
 
     @Override
     public void onCriticsLongImageClick(final ImageView imageView, final String title) {
         this.imageView = imageView;
         this.title = title;
+        this.bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
         new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.save_image)
                 .setMessage(R.string.save_or_cancel)
@@ -173,7 +178,17 @@ public class CriticsFragment extends Fragment implements CriticsListAdapter.Crit
         if (ContextCompat.checkSelfPermission(getContext(),
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
-            new SavePictures(getContext(), getView(), title, imageView);
+            try {
+                Utils.savePicture(getContext(), title, bitmap);
+                Snackbar.make(imageView,
+                        getString(R.string.image_saved),
+                        Snackbar.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Snackbar.make(imageView,
+                        getString(R.string.image_not_saved),
+                        Snackbar.LENGTH_SHORT).show();
+            }
             return true;
         } else {
             return false;
@@ -196,7 +211,9 @@ public class CriticsFragment extends Fragment implements CriticsListAdapter.Crit
                 .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Snackbar.make(getView(), R.string.image_not_saved, Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(getView(),
+                                R.string.image_not_saved,
+                                Snackbar.LENGTH_SHORT).show();
                     }
                 })
                 .show();
@@ -209,13 +226,27 @@ public class CriticsFragment extends Fragment implements CriticsListAdapter.Crit
             case 0: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    new SavePictures(getContext(), getView(), title, imageView);
+                    try {
+                        Utils.savePicture(getContext(), title, bitmap);
+                        Snackbar.make(imageView,
+                                getString(R.string.image_saved),
+                                Snackbar.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Snackbar.make(imageView,
+                                getString(R.string.image_not_saved),
+                                Snackbar.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Snackbar.make(getView(), R.string.no_permission, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(getView(),
+                            R.string.no_permission,
+                            Snackbar.LENGTH_SHORT).show();
                 }
                 return;
             }
         }
-        Snackbar.make(getView(), R.string.no_permission, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(getView(),
+                R.string.no_permission,
+                Snackbar.LENGTH_SHORT).show();
     }
 }

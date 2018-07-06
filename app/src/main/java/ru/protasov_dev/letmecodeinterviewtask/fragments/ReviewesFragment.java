@@ -6,6 +6,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -26,7 +28,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import ru.protasov_dev.letmecodeinterviewtask.App;
 import ru.protasov_dev.letmecodeinterviewtask.R;
-import ru.protasov_dev.letmecodeinterviewtask.SavePictures;
+import ru.protasov_dev.letmecodeinterviewtask.Utils;
 import ru.protasov_dev.letmecodeinterviewtask.activity.ReviewPage;
 import ru.protasov_dev.letmecodeinterviewtask.adapters.ReviewesListAdapter;
 import ru.protasov_dev.letmecodeinterviewtask.endlessrecyclereiew.EndlessRecyclerViewReviews;
@@ -141,13 +143,14 @@ public class ReviewesFragment extends Fragment implements
         startActivity(startReviewPage);
     }
 
-    private ImageView imageView;
+    private Bitmap bitmap;
     private String title;
 
     @Override
     public void onReviewesLongImageClick(final ImageView imageView, final String title) {
-        this.imageView = imageView;
+
         this.title = title;
+        this.bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
 
         new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.save_image)
@@ -173,7 +176,13 @@ public class ReviewesFragment extends Fragment implements
         if (ContextCompat.checkSelfPermission(getContext(),
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
-            new SavePictures(getContext(), getView(), title, imageView);
+            try {
+                Utils.savePicture(getContext(), title, bitmap);
+                Snackbar.make(view, getString(R.string.image_saved), Snackbar.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Snackbar.make(view, getString(R.string.image_not_saved), Snackbar.LENGTH_SHORT).show();
+            }
             return true;
         } else {
             return false;
@@ -196,7 +205,8 @@ public class ReviewesFragment extends Fragment implements
                 .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Snackbar.make(getView(), R.string.image_not_saved, Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(getView(), R.string.image_not_saved, Snackbar.LENGTH_SHORT)
+                                .show();
                     }
                 })
                 .show();
@@ -209,13 +219,24 @@ public class ReviewesFragment extends Fragment implements
             case 0: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    new SavePictures(getContext(), getView(), title, imageView);
+                    try {
+                        Utils.savePicture(getContext(), title, bitmap);
+                        Snackbar.make(view, getString(R.string.image_saved), Snackbar.LENGTH_SHORT)
+                                .show();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Snackbar.make(view, getString(R.string.image_not_saved), Snackbar.LENGTH_SHORT)
+                                .show();
+                    }
                 } else {
-                    Snackbar.make(getView(), R.string.no_permission, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(getView(),
+                            R.string.no_permission,
+                            Snackbar.LENGTH_SHORT).show();
                 }
                 return;
             }
         }
-        Snackbar.make(getView(), R.string.no_permission, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(getView(), R.string.no_permission, Snackbar.LENGTH_SHORT)
+                .show();
     }
 }
