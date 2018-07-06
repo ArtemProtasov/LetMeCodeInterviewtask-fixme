@@ -30,4 +30,16 @@
     <string name="order_reviewes">by-publication-date</string>
 
     <string name="no_value">No value</string>
+    <string name="image_saved">Image saved! Look at the gallery</string>
+    <string name="file_not_available">File not available or not found!</string>
+    <string name="no_write_access">There is no write access!</string>
+    <string name="cancel">CANCEL</string>
+    <string name="image_not_saved">Image not saved</string>
+    <string name="save_or_cancel">Click \"Save\" to save and \"Cancel\" if you want to exit</string>
+    <string name="save_image">Save image?</string>
+    <string name="save">SAVE</string>
+    <string name="no_permission">No permissions to save!</string>
+    <string name="allow_save_pictures">Allow the application to save pictures?</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
 </resources>

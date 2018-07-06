@@ -1,6 +1,7 @@
 package ru.protasov_dev.letmecodeinterviewtask;
 
 import android.app.Application;
+import android.content.Context;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

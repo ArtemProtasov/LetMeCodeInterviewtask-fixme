@@ -1,10 +1,21 @@
 package ru.protasov_dev.letmecodeinterviewtask.fragments;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -14,18 +25,19 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import ru.protasov_dev.letmecodeinterviewtask.App;
+import ru.protasov_dev.letmecodeinterviewtask.R;
 import ru.protasov_dev.letmecodeinterviewtask.SavePictures;
 import ru.protasov_dev.letmecodeinterviewtask.activity.ReviewPage;
-import ru.protasov_dev.letmecodeinterviewtask.App;
+import ru.protasov_dev.letmecodeinterviewtask.adapters.ReviewesListAdapter;
 import ru.protasov_dev.letmecodeinterviewtask.endlessrecyclereiew.EndlessRecyclerViewReviews;
 import ru.protasov_dev.letmecodeinterviewtask.parsetaskmanagers.PostModelReviews.PostModelReviews;
 import ru.protasov_dev.letmecodeinterviewtask.parsetaskmanagers.PostModelReviews.Result;
-import ru.protasov_dev.letmecodeinterviewtask.R;
-import ru.protasov_dev.letmecodeinterviewtask.adapters.ReviewesListAdapter;
 
 import static android.R.color.holo_blue_bright;
 import static android.R.color.holo_green_light;
@@ -41,6 +53,8 @@ public class ReviewesFragment extends Fragment implements
     private EditText etKeywords;
     private ReviewesListAdapter reviewesListAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private View view;
+    private final int PERMISSION_REQUEST_CODE = 0;
 
     @Nullable
     @Override
@@ -53,6 +67,7 @@ public class ReviewesFragment extends Fragment implements
     @SuppressLint("ResourceAsColor")
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        this.view = view;
         swipeRefreshLayout = view.findViewById(R.id.swipe_container);
         etKeywords = view.findViewById(R.id.keyword);
 
@@ -110,7 +125,7 @@ public class ReviewesFragment extends Fragment implements
                 reviewer, offset, order).enqueue(new Callback<PostModelReviews>() {
             @Override
             public void onResponse(Call<PostModelReviews> call, Response<PostModelReviews> response) {
-                if(response.body() != null) {
+                if (response.body() != null) {
                     reviewesListAdapter.addItems(response.body().getResults());
                 }
                 swipeRefreshLayout.setRefreshing(false);
@@ -132,8 +147,80 @@ public class ReviewesFragment extends Fragment implements
         startActivity(startReviewPage);
     }
 
+    ImageView imageView;
+    String title;
+
     @Override
-    public void onReviewesLongImageClick(ImageView imageView, String title) {
+    public void onReviewesLongImageClick(final ImageView imageView, final String title) {
         new SavePictures(getContext(), getView(), getActivity(), title, imageView);
+
+        new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.save_image)
+                .setMessage(R.string.save_or_cancel)
+                .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (!savePictures()) {
+                            requestPermission();
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Snackbar.make(getView(), R.string.image_not_saved, Snackbar.LENGTH_SHORT).show();
+                    }
+                })
+                .show();
+    }
+
+    private boolean savePictures() {
+        if (ContextCompat.checkSelfPermission(getContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
+            new SavePictures(getContext(), getView(), getActivity(), title, imageView);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void requestPermission() {
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.no_permission)
+                .setMessage(R.string.allow_save_pictures)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        requestPermissions(new String[]{
+                                                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                                            },
+                                0);
+                    }
+                })
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Snackbar.make(getView(), R.string.image_not_saved, Snackbar.LENGTH_SHORT).show();
+                    }
+                })
+                .show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 0: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    new SavePictures(getContext(), getView(), getActivity(), title, imageView);
+                } else {
+                    Snackbar.make(getView(), R.string.no_permission, Snackbar.LENGTH_SHORT).show();
+                }
+                return;
+            }
+        }
+        Snackbar.make(getView(), R.string.no_permission, Snackbar.LENGTH_SHORT).show();
     }
 }

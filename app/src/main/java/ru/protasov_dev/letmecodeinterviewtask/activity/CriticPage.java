@@ -1,6 +1,8 @@
 package ru.protasov_dev.letmecodeinterviewtask.activity;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -141,8 +143,80 @@ public class CriticPage extends AppCompatActivity implements EndlessRecyclerView
         startActivity(startReviewPage);
     }
 
+    ImageView imageView;
+    String title;
+
     @Override
-    public void onReviewesLongImageClick(ImageView imageView, String title) {
-        new SavePictures(this, imageView, this, title, imageView);
+    public void onReviewesLongImageClick(final ImageView imageView, final String title) {
+        this.imageView = imageView;
+        this.title = title;
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.save_image)
+                .setMessage(R.string.save_or_cancel)
+                .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (!savePictures()) {
+                            requestPermission();
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Snackbar.make(imageView, R.string.image_not_saved, Snackbar.LENGTH_SHORT).show();
+                    }
+                })
+                .show();
+    }
+
+    private boolean savePictures() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
+            new SavePictures(this, imageView, this, title, imageView);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void requestPermission() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.no_permission)
+                .setMessage(R.string.allow_save_pictures)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        requestPermissions(new String[]{
+                                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                                },
+                                0);
+                    }
+                })
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Snackbar.make(imageView, R.string.image_not_saved, Snackbar.LENGTH_SHORT).show();
+                    }
+                })
+                .show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 0: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    new SavePictures(this, imageView, this, title, imageView);
+                } else {
+                    Snackbar.make(imageView, R.string.no_permission, Snackbar.LENGTH_SHORT).show();
+                }
+                return;
+            }
+        }
+        Snackbar.make(imageView, R.string.no_permission, Snackbar.LENGTH_SHORT).show();
     }
 }
