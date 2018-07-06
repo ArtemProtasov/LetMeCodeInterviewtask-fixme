@@ -5,14 +5,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -28,21 +23,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.Calendar;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import ru.protasov_dev.letmecodeinterviewtask.App;
+import ru.protasov_dev.letmecodeinterviewtask.R;
 import ru.protasov_dev.letmecodeinterviewtask.SavePictures;
 import ru.protasov_dev.letmecodeinterviewtask.activity.CriticPage;
-import ru.protasov_dev.letmecodeinterviewtask.App;
 import ru.protasov_dev.letmecodeinterviewtask.adapters.CriticsListAdapter;
 import ru.protasov_dev.letmecodeinterviewtask.parsetaskmanagers.PostModelCritics.PostModelCritics;
 import ru.protasov_dev.letmecodeinterviewtask.parsetaskmanagers.PostModelCritics.Result;
-import ru.protasov_dev.letmecodeinterviewtask.R;
 
 import static android.R.color.holo_blue_bright;
 import static android.R.color.holo_green_light;
@@ -122,26 +112,26 @@ public class CriticsFragment extends Fragment implements CriticsListAdapter.Crit
 
         App.getApi().getCritic(nameCritics, getString(R.string.api_key_nyt))
                 .enqueue(new Callback<PostModelCritics>() {
-            @Override
-            public void onResponse(Call<PostModelCritics> call, Response<PostModelCritics> response) {
-                if(response.body() != null) {
-                    criticsListAdapter.addItems(response.body().getResults());
-                }
-                swipeRefreshLayout.setRefreshing(false);
-            }
+                    @Override
+                    public void onResponse(Call<PostModelCritics> call, Response<PostModelCritics> response) {
+                        if (response.body() != null) {
+                            criticsListAdapter.addItems(response.body().getResults());
+                        }
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
 
-            @Override
-            public void onFailure(Call<PostModelCritics> call, Throwable t) {
-                Toast.makeText(getContext(), R.string.no_internet, Toast.LENGTH_SHORT).show();
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
+                    @Override
+                    public void onFailure(Call<PostModelCritics> call, Throwable t) {
+                        Toast.makeText(getContext(), R.string.no_internet, Toast.LENGTH_SHORT).show();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
     }
 
     @Override
     public void onCriticsItemClick(Result item) {
         String URL = null;
-        if(item.getMultimedia() != null){
+        if (item.getMultimedia() != null) {
             URL = item.getMultimedia().getResource().getSrc();
         }
         Intent startCriticPage = new Intent(getContext(), CriticPage.class)
@@ -183,7 +173,7 @@ public class CriticsFragment extends Fragment implements CriticsListAdapter.Crit
         if (ContextCompat.checkSelfPermission(getContext(),
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
-            new SavePictures(getContext(), getView(), getActivity(), title, imageView);
+            new SavePictures(getContext(), getView(), title, imageView);
             return true;
         } else {
             return false;
@@ -219,7 +209,7 @@ public class CriticsFragment extends Fragment implements CriticsListAdapter.Crit
             case 0: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    new SavePictures(getContext(), getView(), getActivity(), title, imageView);
+                    new SavePictures(getContext(), getView(), title, imageView);
                 } else {
                     Snackbar.make(getView(), R.string.no_permission, Snackbar.LENGTH_SHORT).show();
                 }

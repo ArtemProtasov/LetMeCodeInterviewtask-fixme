@@ -60,7 +60,7 @@ public class CriticPage extends AppCompatActivity implements EndlessRecyclerView
         String bio = getData.getStringExtra("BIO");
         try {
             url_photo = getData.getStringExtra("URL_IMG");
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             url_photo = null;
         }
 
@@ -121,7 +121,7 @@ public class CriticPage extends AppCompatActivity implements EndlessRecyclerView
         App.getApi().getCriticPost(getString(R.string.api_key_nyt), name, currentPage).enqueue(new Callback<PostModelReviews>() {
             @Override
             public void onResponse(Call<PostModelReviews> call, Response<PostModelReviews> response) {
-                if(response.body() != null) {
+                if (response.body() != null) {
                     reviewesListAdapter.addItems(response.body().getResults());
                 }
                 refreshLayout.setRefreshing(false);
@@ -174,7 +174,7 @@ public class CriticPage extends AppCompatActivity implements EndlessRecyclerView
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
-            new SavePictures(this, imageView, this, title, imageView);
+            new SavePictures(this, imageView, title, imageView);
             return true;
         } else {
             return false;
@@ -210,7 +210,7 @@ public class CriticPage extends AppCompatActivity implements EndlessRecyclerView
             case 0: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    new SavePictures(this, imageView, this, title, imageView);
+                    new SavePictures(this, imageView, title, imageView);
                 } else {
                     Snackbar.make(imageView, R.string.no_permission, Snackbar.LENGTH_SHORT).show();
                 }
